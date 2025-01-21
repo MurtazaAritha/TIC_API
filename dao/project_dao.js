@@ -160,6 +160,7 @@ const projectQuery = async (queryType, params = {}) => {
                       ${params.last_run ? `, last_run ` : ''}
                       ${params.history ? `, history ` : ''}
                       ${params.no_of_runs ? `, no_of_runs ` : ''}
+                      ${params.base64 ? `, base64 ` : ''}
                   ) 
                   VALUES (
                       '${params.project_name}',
@@ -182,6 +183,7 @@ const projectQuery = async (queryType, params = {}) => {
                       ${params.last_run ? ` , '${params.last_run}'` : ''}
                       ${params.history ? `, '${JSON.stringify(params.history)}'` : ''}
                       ${params.no_of_runs ? `, no_of_runs = ${params.no_of_runs}` : ''}
+                      ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
         );`;
         break;
       case 'UPDATE_PROJECT':
@@ -209,6 +211,7 @@ const projectQuery = async (queryType, params = {}) => {
                               ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ''}
                               ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
                               ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
+                              ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
                         `;
                         
         // Conditionally append checkListResponse and chatResponse
