@@ -280,31 +280,25 @@ router.get('/api/v1/chat/data', async (req, res) => {
 router.post('/api/v1/chat/runComplainceAssessment', async (req, res) => {
   try {
     const {
-      body: { requirements = '' },
+      body: { requirements = [] },
     } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';
     let customResponse = {};
     let message = '';
-    if (requirements.length > 0) {
-      let details = await chatRunComplainceAssessmentService(requirements);
-      if (details) {
-        responseType = SUCCESS;
-        statusCode = STATUS_CODE_SUCCESS;
-        data = details;
-        data.message = 'Fetched Details Successfully';
-      } else {
-        responseType = CUSTOM_RESPONSE;
-        statusCode = STATUS_CODE_BAD_REQUEST;
-        customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
-        customResponse.messageCode = statusCode;
-      }
+    let details = await chatRunComplainceAssessmentService(requirements);
+    if (details) {
+      responseType = SUCCESS;
+      statusCode = STATUS_CODE_SUCCESS;
+      data = details;
+      data.message = 'Fetched Details Successfully';
     } else {
-      responseType = BAD_REQUEST;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      message = 'requirements is required';
+      customResponse.statusCode = statusCode;
+      customResponse.message = 'Failed to get response';
+      customResponse.messageCode = statusCode;
     }
     let response = setResponse(responseType, message, data, customResponse);
     res.status(statusCode).send(response);

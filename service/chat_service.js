@@ -398,9 +398,23 @@ const chatDataService = async () => {
 
 const chatRunComplainceAssessmentService = async (requirements) => {
   try {
-    const response = await fetch(
-      `${PYTHON_SERVICE_URL}/run_complaince_assessment/?requirements=${requirements}`,
-    );
+    // const response = await fetch(
+    //   `${PYTHON_SERVICE_URL}/run_complaince_assessment/?requirements=${requirements}`,
+    // );
+    // const form = new FormData();
+    // form.append('requirements', requirements, {
+    //   // filename: 'your-file.pdf', // File name sent to the server
+    //   ContentType: 'multipart/form-data; boundary=----boundary123',
+    //   Accept: 'application/json',
+    // });
+    const apiUrl = `${PYTHON_SERVICE_URL}/run_complaince_assessment/`;
+
+    const response = await axios.post(apiUrl, (requirements = requirements), {
+      headers: {
+        // ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
+        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+      },
+    });
 
     if (response.ok) {
       const responseData = await response.json();
@@ -433,4 +447,5 @@ module.exports = {
   uploadStandardCheckListService,
   uploadProjectDocsService,
   chatDataService,
+  chatRunComplainceAssessmentService,
 };
