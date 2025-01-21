@@ -213,6 +213,42 @@ router.post('/api/v1/chat/uploadProjectDocs', async (req, res) => {
   }
 });
 
+router.post('/api/v2/chat/uploadProjectDocs', async (req, res) => {
+  try {
+    const {
+      query: { imageKey = '' },
+    } = req;
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    if (imageKey) {
+      const result = await uploadStandardCheckListService2(imageKey);
+      if (result.success) {
+        responseType = SUCCESS;
+        statusCode = STATUS_CODE_SUCCESS;
+        data.details = result;
+        data.message = 'Documents Uploaded Successfully';
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_BAD_REQUEST;
+        customResponse.statusCode = statusCode;
+        customResponse.message = 'Failed to upload';
+        customResponse.messageCode = statusCode;
+      }
+    } else {
+      responseType = BAD_REQUEST;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.message = 'File is missing, Please upload file';
+    }
+    let response = setResponse(responseType, '', data, customResponse);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error('upload project docs v2 route: ', err);
+    res.status(500).send(err);
+  }
+});
+
 router.get('/api/v1/chat/data', async (req, res) => {
   try {
     let data = {};
