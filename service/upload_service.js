@@ -5,13 +5,23 @@ const uploadFileToS3 = async (documents, type) => {
   try {
     let data = [];
     for (const item of documents) {
-      const fileContent = item;
+      const regex = /^data:([A-Za-z-+/]+);base64,/;
+      const match = item.match(regex);
+      let base64Data = item;
+
+      if (match) {
+        base64Data = item.replace(regex, ''); // Remove the base64 prefix
+      }
+
+      const fileContent = Buffer.from(base64Data, 'base64');
       const fileName =
         `File_` + Math.random().toString(36).substring(6) + '.' + type;
       const s3Params = {
         Bucket: process.env.BUCKET_NAME,
         Key: fileName,
         Body: fileContent,
+        ContentType: 'application/pdf',
+        ACL: 'public-read', // Allow public read access to this object
       };
       let res = await uploadToS3(s3Params);
       data.push(res.Location);

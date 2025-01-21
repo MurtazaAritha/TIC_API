@@ -12,11 +12,13 @@ const { logger } = require('../utils/logger');
 const {
   chatQuestionService,
   uploadStandardChatService,
+  uploadStandardChatService2,
+  uploadStandardCheckListService2,
+  uploadProjectDocsService2,
   uploadStandardCheckListService,
   uploadProjectDocsService,
   chatDataService,
   chatRunComplainceAssessmentService,
-  uploadStandardCheckListService2,
 } = require('../service/chat_service');
 const { validate } = require('../utils/helper');
 
@@ -53,13 +55,13 @@ router.post('/api/v1/chat/uploadStandardChat', async (req, res) => {
 router.post('/api/v2/chat/uploadStandardChat', async (req, res) => {
   try {
     const {
-      query: { imageKey = '' },
+      body: { imageKey = '' },
     } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';
     let customResponse = {};
-    const result = await uploadStandardCheckListService2(imageKey);
+    const result = await uploadStandardChatService2(imageKey);
     if (result.success) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
@@ -79,7 +81,6 @@ router.post('/api/v2/chat/uploadStandardChat', async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 
 router.get('/api/v1/chat/askQuestion', async (req, res) => {
   try {
@@ -151,7 +152,7 @@ router.post('/api/v1/chat/uploadStandardCheckList', async (req, res) => {
 router.post('/api/v2/chat/uploadStandardCheckList', async (req, res) => {
   try {
     const {
-      query: { imageKey = '' },
+      body: { imageKey = '' },
     } = req;
     let data = {};
     let responseType = '';
@@ -216,14 +217,14 @@ router.post('/api/v1/chat/uploadProjectDocs', async (req, res) => {
 router.post('/api/v2/chat/uploadProjectDocs', async (req, res) => {
   try {
     const {
-      query: { imageKey = '' },
+      body: { imageKey = '' },
     } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';
     let customResponse = {};
     if (imageKey) {
-      const result = await uploadStandardCheckListService2(imageKey);
+      const result = await uploadProjectDocsService2(imageKey);
       if (result.success) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
@@ -276,10 +277,10 @@ router.get('/api/v1/chat/data', async (req, res) => {
   }
 });
 
-router.get('/api/v1/chat/runComplainceAssessment', async (req, res) => {
+router.post('/api/v1/chat/runComplainceAssessment', async (req, res) => {
   try {
     const {
-      query: { requirements = '' },
+      body: { requirements = '' },
     } = req;
     let data = {};
     let responseType = '';

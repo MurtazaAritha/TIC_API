@@ -113,6 +113,106 @@ const uploadStandardChatService = async () => {
   }
 };
 
+const uploadStandardChatService2 = async (imageKey) => {
+  try {
+    const form = await getFileDetailsFromS3(imageKey);
+
+    const apiUrl = `${PYTHON_SERVICE_URL}/uploadstd_chat/`;
+
+    const response = await axios.post(apiUrl, form, {
+      headers: {
+        ...form.getHeaders(),
+        'User-Agent': 'MyCustomUserAgent/1.0',
+      },
+    });
+
+    if (response.status === 200) {
+      return { success: true, data: response.data };
+    } else {
+      console.error(
+        'Error: Non-OK response received',
+        response.status,
+        response.statusText,
+      );
+      return {
+        success: false,
+        error: `Server returned status ${response.statusText}`,
+      };
+    }
+  } catch (error) {
+    console.error('Error during upload:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+const uploadStandardCheckListService2 = async (imageKey) => {
+  try {
+    const form = await getFileDetailsFromS3(imageKey);
+    // Step 5: Send the form data with the file to the API
+    const apiUrl = `${PYTHON_SERVICE_URL}/uploadstd_checklist_crt/`;
+
+    const response = await axios.post(apiUrl, form, {
+      headers: {
+        ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
+        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+      },
+    });
+
+    // Step 6: Handle successful responses
+    if (response.status === 200) {
+      return { success: true, data: response.data };
+    } else {
+      // Handle non-OK responses
+      console.error(
+        'Error: Non-OK response received',
+        response.status,
+        response.statusText,
+      );
+      return {
+        success: false,
+        error: `Server returned status ${response.statusText}`,
+      };
+    }
+  } catch (error) {
+    logger.error('Chat upload service error', error);
+    return { response: false, error };
+  }
+};
+
+const uploadProjectDocsService2 = async (imageKey) => {
+  try {
+    const form = await getFileDetailsFromS3(imageKey);
+    // Step 5: Send the form data with the file to the API
+    const apiUrl = `${PYTHON_SERVICE_URL}/upload_project_docs_summarize/`;
+
+    const response = await axios.post(apiUrl, form, {
+      headers: {
+        ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
+        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+      },
+    });
+
+    // Step 6: Handle successful responses
+    if (response.status === 200) {
+      return { success: true, data: response.data };
+    } else {
+      // Handle non-OK responses
+      console.error(
+        'Error: Non-OK response received',
+        response.status,
+        response.statusText,
+      );
+      return {
+        success: false,
+        error: `Server returned status ${response.statusText}`,
+      };
+    }
+  } catch (error) {
+    logger.error('Chat upload service error', error);
+    return { response: false, error };
+  }
+};
+
 const uploadStandardCheckListService = async () => {
   const filePath = path.join(__dirname, '../utils/IEC-61400-12-2022.pdf');
 
@@ -171,9 +271,18 @@ const uploadStandardCheckListService = async () => {
   }
 };
 
-const uploadStandardCheckListService2 = async (imageKey) => {
+const getFileDetailsFromS3 = async (imageKey) => {
   try {
-    // Step 1: Fetch the file from S3 (already a base64 string)
+    // const regex = /^data:([A-Za-z-+/]+);base64,/;
+    // const match = imageKey.match(regex);
+    // let fileType = 'application/octet-stream'; // Default to binary if no match
+    // let base64Data = imageKey;
+
+    // if (match) {
+    //   fileType = match[1]; // Extract MIME type from the base64 string
+    //   base64Data = imageKey.replace(regex, ''); // Remove the base64 prefix
+    // }
+
     const getParams = {
       Key: imageKey,
       Bucket: process.env.BUCKET_NAME,
@@ -181,16 +290,44 @@ const uploadStandardCheckListService2 = async (imageKey) => {
 
     let s3Object = await getFromS3(getParams);
 
-    // Step 2: Decode base64 to binary data
+    // Step 2: Decode the base64 data to binary data
     const binaryData = Buffer.from(s3Object, 'base64');
 
-    // Define file path to save the PDF
-    const filePath = path.join(__dirname, '../utils/output-file.pdf');
+    // Step 3: Determine the file extension based on MIME type
+    // let fileExtension = '.bin'; // Default extension for unknown file types
 
-    // Step 3: Write the binary data to a PDF file using fs.promises.writeFile
+    // // Mapping MIME types to file extensions
+    // const mimeToExt = {
+    //   'application/pdf': '.pdf',
+    //   'image/jpeg': '.jpg',
+    //   'image/png': '.png',
+    //   'application/msword': '.doc',
+    //   'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+    //     '.docx',
+    //   'application/vnd.ms-excel': '.xls',
+    //   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+    //     '.xlsx',
+    //   'application/zip': '.zip',
+    //   'image/svg+xml': '.svg',
+    //   'image/svg': '.svg',
+    // };
+
+    // // If the MIME type is recognized, use the corresponding extension
+    // if (mimeToExt[fileType]) {
+    //   fileExtension = mimeToExt[fileType];
+    // }
+
+    const fileExtension = imageKey.split('.').pop();
+
+    // Step 4: Define the file path to save the file with appropriate extension
+    const filePath = path.join(
+      __dirname,
+      `../utils/output-file.${fileExtension}`,
+    );
+    console.log(`Saving file as: ${filePath}`);
+
     await fs.promises.writeFile(filePath, binaryData);
     console.log('File written successfully!');
-
     // Step 4: Create FormData and append the PDF file to the form
     const form = new FormData();
     const fileStream = fs.createReadStream(filePath);
@@ -200,36 +337,11 @@ const uploadStandardCheckListService2 = async (imageKey) => {
     }
 
     form.append('file', fileStream, {
-      filename: 'your-file.pdf', // File name sent to the server
+      // filename: 'your-file.pdf', // File name sent to the server
       ContentType: 'application/pdf', // Ensure content type matches the file type
       Accept: 'application/json',
     });
-
-    // Step 5: Send the form data with the file to the API
-    const apiUrl = `${PYTHON_SERVICE_URL}/uploadstd_checklist_crt/`;
-
-    const response = await axios.post(apiUrl, form, {
-      headers: {
-        ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
-      },
-    });
-
-    // Step 6: Handle successful responses
-    if (response.status === 200) {
-      return { success: true, data: response.data };
-    } else {
-      // Handle non-OK responses
-      console.error(
-        'Error: Non-OK response received',
-        response.status,
-        response.statusText,
-      );
-      return {
-        success: false,
-        error: `Server returned status ${response.statusText}`,
-      };
-    }
+    return form;
   } catch (error) {
     // Handle errors and log them
     console.error('Upload service error:', error);
@@ -391,10 +503,11 @@ const chatRunComplainceAssessmentService = async (requirements) => {
 
 module.exports = {
   uploadStandardChatService,
+  uploadStandardChatService2,
+  uploadStandardCheckListService2,
+  uploadProjectDocsService2,
   chatQuestionService,
   uploadStandardCheckListService,
   uploadProjectDocsService,
   chatDataService,
-  chatRunComplainceAssessmentService,
-  uploadStandardCheckListService2,
 };
