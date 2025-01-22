@@ -274,6 +274,18 @@ const projectQuery = async (queryType, params = {}) => {
                   LIMIT 10;
                 `;
         break;
+      case 'GET_ORG_TOP_PROJECTS':
+        query1 = `SELECT 
+                      u.user_first_name, u.user_last_name,
+                      COUNT(p.project_id) AS project_count
+                  FROM users u
+                  LEFT JOIN projects p ON p.created_by_id = u.user_id
+                  WHERE p.org_id = ${params.org_id}
+                  GROUP BY u.user_id
+                  ORDER BY project_count DESC
+                  LIMIT 10;
+                `;
+        break;
     }
 
     return new Promise((resolve, reject) => {
