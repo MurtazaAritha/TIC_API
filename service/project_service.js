@@ -79,7 +79,10 @@ const getUserCreatedProjectService = async (params) => {
 
 const getOrgCountService = async (params) => {
   try {
-    const data = await projectQuery('GET_ORG_PROJECT_COUNTS', params);
+    const data = {};
+    let details = await projectQuery('GET_ORG_PROJECT_COUNTS', params);
+    data.details = details[0] ? details[0] : {};
+    data.userCount = await userQuery('GET_ORG_USER_COUNT', params);
     return data;
   } catch (error) {
     logger.error('Get org project count service', error);

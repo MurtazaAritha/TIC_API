@@ -157,7 +157,7 @@ router.get('/api/v1/projects/counts', async (req, res) => {
 router.get('/api/v1/org/projects/counts', async (req, res) => {
   try {
     let {
-      query: { org_id = null, industry_id = null },
+      query: { org_id = 0, industry_id = 0 },
     } = req;
     let data = {};
     let responseType = '';
@@ -170,7 +170,7 @@ router.get('/api/v1/org/projects/counts', async (req, res) => {
       if (details) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.details = details[0];
+        data = details;
         data.message = 'Fetched Details Successfully';
       } else {
         responseType = CUSTOM_RESPONSE;
