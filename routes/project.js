@@ -22,6 +22,7 @@ const {
   getUserCreatedProjectService,
   getOrgCountService,
   getSACountService,
+  getSATopProjectService,
 } = require('../service/project_service');
 
 router.post('/api/v1/project/create', async (req, res) => {
@@ -396,4 +397,32 @@ router.get('/api/v1/user/projects', async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+router.get('/api/v1/sa/industries/top-projects', async (req, res) => {
+  try {
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    let details = await getSATopProjectService();
+    if (details) {
+      responseType = SUCCESS;
+      statusCode = STATUS_CODE_SUCCESS;
+      data = details;
+      data.message = 'Fetched Details Successfully';
+    } else {
+      responseType = CUSTOM_RESPONSE;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.statusCode = statusCode;
+      customResponse.message = 'Failed to get response';
+      customResponse.messageCode = statusCode;
+    }
+    let response = setResponse(responseType, '', data, customResponse);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error('Get org projects count details route', err);
+    res.status(500).send(err);
+  }
+});
+
 module.exports = router;

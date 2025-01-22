@@ -102,6 +102,15 @@ const getSACountService = async () => {
   }
 };
 
+const getSATopProjectService = async () => {
+  try {
+    let details = await projectQuery('GET_SA_TOP_PROJECTS');
+    return details;
+  } catch (error) {
+    logger.error('Get SA top project service', error);
+  }
+};
+
 module.exports = {
   projectService,
   getProjectService,
@@ -112,4 +121,5 @@ module.exports = {
   getUserCreatedProjectService,
   getOrgCountService,
   getSACountService,
+  getSATopProjectService,
 };

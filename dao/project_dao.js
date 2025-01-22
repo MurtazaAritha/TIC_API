@@ -213,7 +213,7 @@ const projectQuery = async (queryType, params = {}) => {
                               ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
                               ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
                         `;
-                        
+
         // Conditionally append checkListResponse and chatResponse
         if (params.checkListResponse) {
           const escapedCheckListResponse = params.checkListResponse.replace(
@@ -262,6 +262,17 @@ const projectQuery = async (queryType, params = {}) => {
                       SUM(CASE WHEN status = 'Success' THEN 1 ELSE 0 END) AS success_count,
                       SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed_count
                   FROM projects`;
+        break;
+      case 'GET_SA_TOP_PROJECTS':
+        query1 = `SELECT 
+                      i.industry_name,
+                      COUNT(p.project_id) AS project_count
+                  FROM industries i
+                  LEFT JOIN projects p ON p.industry_id = i.industry_id
+                  GROUP BY i.industry_id, i.industry_name
+                  ORDER BY project_count DESC
+                  LIMIT 10;
+                `;
         break;
     }
 
