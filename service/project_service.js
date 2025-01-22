@@ -1,5 +1,7 @@
 const { logger } = require('../utils/logger');
 const { projectQuery } = require('../dao/project_dao');
+const { userQuery } = require('../dao/user_dao');
+const { genericQuery } = require('../dao/generic_dao');
 
 // const {} = require('../constants/response_constants');
 const projectService = async (params) => {
@@ -86,7 +88,11 @@ const getOrgCountService = async (params) => {
 
 const getSACountService = async () => {
   try {
-    const data = await projectQuery('GET_SA_PROJECT_COUNTS');
+    let data = {};
+    let details = await projectQuery('GET_SA_PROJECT_COUNTS');
+    data.details = details[0] ? details[0] : {};
+    data.userCount = await userQuery('GET_SA_USER_COUNT');
+    data.orgCount = await genericQuery('GET_ORGANIZATION_COUNT');
     return data;
   } catch (error) {
     logger.error('Get SA project count service', error);

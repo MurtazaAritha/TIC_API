@@ -10,6 +10,9 @@ const genericQuery = async (queryType, params = {}) => {
       case 'GET_ORGANIZATIONS':
         query1 = `SELECT * FROM organizations;`;
         break;
+      case 'GET_ORGANIZATION_COUNT':
+        query1 = `SELECT count(org_id) as count FROM organizations;`;
+        break;
       case 'GET_ORG_PROJECT_COUNTS':
         query1 = `SELECT count(project_id) as count FROM projects;`;
         break;

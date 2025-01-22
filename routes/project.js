@@ -208,7 +208,7 @@ router.get('/api/v1/sa/projects/counts', async (req, res) => {
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
-      data.details = details[0];
+      data = details;
       data.message = 'Fetched Details Successfully';
     } else {
       responseType = CUSTOM_RESPONSE;
