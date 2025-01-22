@@ -416,9 +416,8 @@ const chatRunComplainceAssessmentService = async (requirements) => {
       },
     });
 
-    if (response.ok) {
-      const responseData = await response.json();
-      return { success: true, data: responseData };
+    if (response.status === 200) {
+      return { success: true, data: response.data };
     } else {
       // Handle non-OK responses
       console.error(
