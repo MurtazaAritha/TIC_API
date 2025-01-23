@@ -264,13 +264,12 @@ const projectQuery = async (queryType, params = {}) => {
         break;
       case 'GET_SA_TOP_PROJECTS':
         query1 = `SELECT 
-                      o.org_name, 
-                      o.industry_names as industry_name,
-                      COUNT(p.project_id) AS project_count  
-                  FROM organizations o
-                  LEFT JOIN projects p ON o.org_id = p.org_id
-                  GROUP BY o.org_name, o.industry_names 
-                  ORDER BY MAX(p.created_at) DESC 
+                      i.industry_name,
+                      COUNT(p.project_id) AS project_count
+                  FROM industries i
+                  JOIN projects p ON p.industry_id = i.industry_id 
+                  GROUP BY i.industry_id, p.org_name
+                  ORDER BY project_count DESC
                   LIMIT 10;
                 `;
         break;
