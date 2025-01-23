@@ -264,7 +264,7 @@ const projectQuery = async (queryType, params = {}) => {
         break;
       case 'GET_SA_TOP_PROJECTS':
         query1 = `SELECT 
-                      i.industry_name, p.org_name
+                      i.industry_name, p.org_name,
                       COUNT(p.project_id) AS project_count
                   FROM industries i
                   LEFT JOIN projects p ON p.industry_id = i.industry_id
@@ -298,6 +298,30 @@ const projectQuery = async (queryType, params = {}) => {
         if (params.week && params.week !== 0) {
           query1 += ` AND EXTRACT(WEEK FROM created_at) = ${params.week}`;
         }
+        break;
+      case 'GET_ORG_RECENT_PROJECTS':
+        query1 = `SELECT 
+                      project_name, 
+                      project_id, 
+                      project_no, 
+                      project_description, 
+                      regulatory_standard, 
+                      invite_members,  
+                      status, 
+                      no_of_runs, 
+                      success_count, 
+                      fail_count, 
+                      last_run, 
+                      created_at, 
+                      created_by_id, 
+                      created_by_name, 
+                      updated_at, 
+                      isActive 
+                  FROM projects 
+                  WHERE org_id = ${params.org_id} 
+                  ORDER BY created_at DESC 
+                  LIMIT ${params.limit};
+                  `;
         break;
     }
 

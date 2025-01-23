@@ -129,6 +129,15 @@ const getUserTopProjectService = async (params) => {
   }
 };
 
+const getOrgRecentProjectService = async (params) => {
+  try {
+    let details = await projectQuery('GET_ORG_RECENT_PROJECTS', params);
+    return details;
+  } catch (error) {
+    logger.error('Get org recent project service', error);
+  }
+};
+
 module.exports = {
   projectService,
   getProjectService,
@@ -142,4 +151,5 @@ module.exports = {
   getSATopProjectService,
   getOrgTopProjectService,
   getUserTopProjectService,
+  getOrgRecentProjectService,
 };
