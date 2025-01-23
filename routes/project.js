@@ -24,6 +24,7 @@ const {
   getSACountService,
   getSATopProjectService,
   getOrgTopProjectService,
+  getUserTopProjectService,
 } = require('../service/project_service');
 
 router.post('/api/v1/project/create', async (req, res) => {
@@ -463,6 +464,46 @@ router.get('/api/v1/org/users/top-projects', async (req, res) => {
     }
   } catch (err) {
     logger.error('Get org users top project counts details route', err);
+    res.status(500).send(err);
+  }
+});
+
+router.get('/api/v1/user/top-projects', async (req, res) => {
+  try {
+    let {
+      query: { user_id = 0 },
+    } = req;
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    const { isValid, errors } = validate({}, {}, { user_id });
+    if (isValid) {
+      let details = await getUserTopProjectService(req.query);
+      if (details) {
+        responseType = SUCCESS;
+        statusCode = STATUS_CODE_SUCCESS;
+        data = details;
+        data.message = 'Fetched Details Successfully';
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_BAD_REQUEST;
+        customResponse.statusCode = statusCode;
+        customResponse.message = 'Failed to get response';
+        customResponse.messageCode = statusCode;
+      }
+      let response = setResponse(responseType, '', data, customResponse);
+      res.status(statusCode).send(response);
+    } else {
+      responseType = CUSTOM_RESPONSE;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.message = Object.values(errors)
+        .flatMap((err) => Object.values(err))
+        .filter((msg) => msg)
+        .join(', ');
+    }
+  } catch (err) {
+    logger.error('Get users top project counts details route', err);
     res.status(500).send(err);
   }
 });
