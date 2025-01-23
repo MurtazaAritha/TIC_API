@@ -269,7 +269,8 @@ const projectQuery = async (queryType, params = {}) => {
                       COUNT(p.project_id) AS project_count  
                   FROM organizations o
                   LEFT JOIN projects p ON o.org_id = p.org_id
-                  GROUP BY o.org_name, o.industry_names
+                  GROUP BY o.org_name, o.industry_names 
+                  ORDER BY MAX(p.created_at) DESC 
                   LIMIT 10;
                 `;
         break;
