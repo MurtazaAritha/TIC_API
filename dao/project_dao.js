@@ -49,13 +49,12 @@ const projectQuery = async (queryType, params = {}) => {
                                       )
                                   )
                                   FROM projects p
-                                  WHERE p.org_id = o.org_id
-                                    AND FIND_IN_SET(p.industry_id, o.industries) > 0
+                                    WHERE p.org_id = o.org_id
                               )
                           )
                       ) AS industries
                   FROM organizations o
-                  LEFT JOIN industries i ON FIND_IN_SET(i.industry_id, o.industries) > 0
+                  LEFT JOIN industries i ON i.industry_id = o.industries
                   GROUP BY o.org_id, o.sector_id;
             `;
         break;
