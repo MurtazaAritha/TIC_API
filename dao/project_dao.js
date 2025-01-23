@@ -265,7 +265,7 @@ const projectQuery = async (queryType, params = {}) => {
       case 'GET_SA_TOP_PROJECTS':
         query1 = `SELECT 
                       o.org_name, 
-                      o.industry_names,
+                      o.industry_names as industry_name,
                       COUNT(p.project_id) AS project_count  
                   FROM organizations o
                   LEFT JOIN projects p ON o.org_id = p.org_id
