@@ -156,15 +156,15 @@ const projectQuery = async (queryType, params = {}) => {
                       status,
                       mapping_standards, 
                       summary_report
-                      ${params.last_run ? `, last_run ` : ''}
-                      ${params.history ? `, history ` : ''}
-                      ${params.no_of_runs ? `, no_of_runs ` : ''}
-                      ${params.base64 ? `, base64 ` : ''}
+                      ${params.last_run ? `, last_run` : ''}
+                      ${params.history ? `, history` : ''}
+                      ${params.no_of_runs ? `, no_of_runs` : ''}
+                      ${params.base64 ? `, base64` : ''}
                   ) 
                   VALUES (
                       '${params.project_name}',
                       '${params.project_no}',
-                      '${params.project_description}',
+                      '${params.project_description.replace(/'/g, '')}',
                       '${JSON.stringify(params.regulatory_standard)}',
                       '${JSON.stringify(params.invite_members)}',
                       '${JSON.stringify(params.documents)}',
@@ -179,11 +179,12 @@ const projectQuery = async (queryType, params = {}) => {
                       '${params.status}',
                       '${params.mapping_standards}',
                       '${JSON.stringify(params.summary_report)}'
-                      ${params.last_run ? ` , '${params.last_run}'` : ''}
+                      ${params.last_run ? `, '${params.last_run}'` : ''}
                       ${params.history ? `, '${JSON.stringify(params.history)}'` : ''}
-                      ${params.no_of_runs ? `, no_of_runs = ${params.no_of_runs}` : ''}
-                      ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
-        );`;
+                      ${params.no_of_runs ? `, ${params.no_of_runs}` : ''}
+                      ${params.base64 ? `, '${JSON.stringify(params.base64)}'` : ''}
+                  );
+                  `;
         break;
       case 'UPDATE_PROJECT':
         query1 = `UPDATE projects 
