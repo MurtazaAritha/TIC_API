@@ -8,6 +8,7 @@ const validate = (
   emails = {},
   numbers = {},
   passwords = {},
+  dates = {},
 ) => {
   // Initialize errors object with default null values
   const errors = {
@@ -15,6 +16,7 @@ const validate = (
     emails: {},
     numbers: {},
     passwords: {},
+    dates: {},
   };
 
   // Helper function to set an error message
@@ -51,6 +53,20 @@ const validate = (
     }
   });
 
+  // Validate dates
+  Object.entries(dates).forEach(([key, item]) => {
+    // Check if the date matches the correct format 'YYYY-MM-DD'
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!item.match(dateRegex)) {
+      setError('dates', key, `Field ${key} is not a valid date format`);
+    } else {
+      // Check if the date is valid using the Date object
+      const date = new Date(item);
+      if (date.toString() === 'Invalid Date') {
+        setError('dates', key, `Field ${key} is not a valid date`);
+      }
+    }
+  });
   // Determine if all validations passed
   const isValid = Object.values(errors).every((category) =>
     Object.values(category).every((message) => !message),

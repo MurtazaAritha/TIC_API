@@ -472,13 +472,13 @@ router.get('/api/v1/org/users/top-projects', async (req, res) => {
 router.get('/api/v1/user/top-projects', async (req, res) => {
   try {
     let {
-      query: { user_id = 0 },
+      query: { user_id = 0, from = '', to = '' },
     } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';
     let customResponse = {};
-    const { isValid, errors } = validate({}, {}, { user_id });
+    const { isValid, errors } = validate({}, {}, { user_id }, {}, { from, to });
     if (isValid) {
       let details = await getUserTopProjectService(req.query);
       if (details) {

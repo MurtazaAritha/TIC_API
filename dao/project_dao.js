@@ -295,12 +295,32 @@ const projectQuery = async (queryType, params = {}) => {
                 `;
         break;
       case 'GET_USER_TOP_PROJECTS':
-        query1 = `SELECT project_name 
-                  FROM projects 
-                  WHERE created_by_id = ${params.user_id} 
-                    AND created_at >= NOW() - INTERVAL 30 DAY
-                  ORDER BY created_at DESC;
-                `;
+        query1 = `WITH RECURSIVE DateRange AS (
+                      SELECT '${params.from}' AS project_date
+                      UNION ALL
+                      SELECT DATE_ADD(project_date, INTERVAL 1 DAY)
+                      FROM DateRange
+                      WHERE project_date <=  '${params.to}'
+                  )
+                  SELECT 
+                      dr.project_date, 
+                      IFNULL(COUNT(p.project_name), 0) AS project_count
+                  FROM DateRange dr
+                  LEFT JOIN projects p
+                      ON DATE(p.created_at) = dr.project_date
+                      AND p.created_by_id = ${params.user_id}
+                  GROUP BY dr.project_date
+                  ORDER BY dr.project_date DESC;
+                  `;
+        // query1 = `SELECT
+        //               DATE(p.created_at) AS project_date,
+        //               COUNT(p.project_name) AS no_of_projects
+        //           FROM projects p
+        //           WHERE p.created_by_id = ${params.user_id}
+        //             AND p.created_at >= ${params.from} <= ${params.to}
+        //           GROUP BY project_date
+        //           ORDER BY project_date DESC;
+        //         `;
 
         // Dynamically add filters based on parameters
         // if (params.month && params.month !== 0) {
