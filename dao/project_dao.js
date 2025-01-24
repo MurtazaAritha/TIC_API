@@ -273,6 +273,14 @@ const projectQuery = async (queryType, params = {}) => {
                   LIMIT 10;
                 `;
         break;
+      case 'GET_SA_ORG_PROJECT_COUNTS':
+        query1 = `SELECT o.org_name, COUNT(p.project_id) AS project_count
+                  FROM organizations o
+                  LEFT JOIN projects p ON o.org_id = p.org_id
+                  GROUP BY o.org_name
+                  ORDER BY project_count DESC;
+                `;
+        break;
       case 'GET_ORG_TOP_PROJECTS':
         query1 = `SELECT 
                       u.user_first_name, u.user_last_name,

@@ -104,8 +104,10 @@ const getSACountService = async () => {
 
 const getSATopProjectService = async () => {
   try {
-    let details = await projectQuery('GET_SA_TOP_PROJECTS');
-    return details;
+    let data = {};
+    data.industryCount = await projectQuery('GET_SA_TOP_PROJECTS');
+    data.orgCount = await projectQuery('GET_SA_ORG_PROJECT_COUNTS');
+    return data;
   } catch (error) {
     logger.error('Get SA top project service', error);
   }
