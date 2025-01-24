@@ -294,18 +294,23 @@ const projectQuery = async (queryType, params = {}) => {
                 `;
         break;
       case 'GET_USER_TOP_PROJECTS':
-        query1 = `SELECT project_name FROM projects WHERE created_by_id = ${params.user_id}`;
+        query1 = `SELECT project_name 
+                  FROM projects 
+                  WHERE created_by_id = ${params.user_id} 
+                    AND created_at >= NOW() - INTERVAL 30 DAY
+                  ORDER BY created_at DESC;
+                `;
 
         // Dynamically add filters based on parameters
-        if (params.month && params.month !== 0) {
-          query1 += ` AND EXTRACT(MONTH FROM created_at) = ${params.month}`;
-        }
-        if (params.year && params.year !== 0) {
-          query1 += ` AND EXTRACT(YEAR FROM created_at) = ${params.year}`;
-        }
-        if (params.week && params.week !== 0) {
-          query1 += ` AND EXTRACT(WEEK FROM created_at) = ${params.week}`;
-        }
+        // if (params.month && params.month !== 0) {
+        //   query1 += ` AND EXTRACT(MONTH FROM created_at) = ${params.month}`;
+        // }
+        // if (params.year && params.year !== 0) {
+        //   query1 += ` AND EXTRACT(YEAR FROM created_at) = ${params.year}`;
+        // }
+        // if (params.week && params.week !== 0) {
+        //   query1 += ` AND EXTRACT(WEEK FROM created_at) = ${params.week}`;
+        // }
         break;
       case 'GET_ORG_RECENT_PROJECTS':
         query1 = `SELECT 
