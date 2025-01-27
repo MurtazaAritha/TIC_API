@@ -193,10 +193,10 @@ const projectQuery = async (queryType, params = {}) => {
                               project_no = '${params.project_no}',
                               project_description = '${params.project_description}',
                               regulatory_standard = '${JSON.stringify(
-                                params.regulatory_standard.replace(/'/g, "''"),
+                                params.regulatory_standard,
                               )}',
                               invite_members = '${JSON.stringify(params.invite_members)}',
-                              documents = '${JSON.stringify(params.documents.replace(/'/g, "''"))}',
+                              documents = '${JSON.stringify(params.documents)}',
                               org_id = ${params.org_id},
                               org_name = '${params.org_name}',
                               created_by_id = ${params.created_by_id},
@@ -208,9 +208,9 @@ const projectQuery = async (queryType, params = {}) => {
                               status = '${params.status}',
                               last_run = '${params.last_run != null ? params.last_run : null}',
                               mapping_standards = '${params.mapping_standards}',
-                              summary_report = '${JSON.stringify(params.summary_report.replace(/'/g, "''"))}'
-                              ${params.complianceAssesment ? `, complianceAssesment = '${JSON.stringify(params.complianceAssesment.replace(/'/g, "''"))}'` : ''}
-                              ${params.history ? `, history = '${JSON.stringify(params.history.replace(/'/g, "''"))}'` : ''}
+                              summary_report = '${JSON.stringify(params.summary_report)}'
+                              ${params.complianceAssesment ? `, complianceAssesment = '${params.complianceAssesment}'` : ''}
+                              ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ''}
                               ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
                               ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
                               ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
