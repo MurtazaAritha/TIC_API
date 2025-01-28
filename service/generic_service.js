@@ -156,6 +156,19 @@ const getOrgCountService = async (params) => {
   }
 };
 
+const deleteSectorService = async (params) => {
+  try {
+    let sectorDetails = await genericQuery('CHECK_IF_SECTOR_IN_USE', params);
+    if (sectorDetails && sectorDetails.length == 0) {
+      await genericQuery('DELETE_SECTOR', params);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    logger.error('delete sector service', error);
+  }
+};
+
 module.exports = {
   getOrgService,
   getSignleOrgService,
@@ -168,4 +181,5 @@ module.exports = {
   createSectorService,
   getOrgDetailsExistService,
   getOrgCountService,
+  deleteSectorService,
 };

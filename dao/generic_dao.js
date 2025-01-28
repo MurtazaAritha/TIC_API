@@ -82,6 +82,12 @@ const genericQuery = async (queryType, params = {}) => {
                       '${params.sector_desc}'
                   );`;
         break;
+      case 'DELETE_SECTOR':
+        query1 = `DELETE FROM sectors WHERE sector_id = ${params.sector_id};`;
+        break;
+      case 'CHECK_IF_SECTOR_IN_USE':
+        query1 = `SELECT sector_id FROM users WHERE sector_id = ${params.sector_id};`;
+        break;
       case 'CHECK_IF_ORG_DETAILS_EXIST':
         query1 = `SELECT org_id FROM organizations WHERE org_name = '${params.org_name}' AND org_email = '${params.org_email}';`;
         break;
