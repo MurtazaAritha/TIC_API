@@ -33,7 +33,9 @@ const insertUserService = async (params) => {
 
 const getUserService = async () => {
   try {
-    const data = await userQuery('GET_USERS');
+    const data = {};
+    data.activeUsers = await userQuery('GET_SA_ACTIVE_USERS');
+    data.inactiveUsers = await userQuery('GET_SA_INACTIVE_USERS');
     return data;
   } catch (error) {
     logger.error('get user service', error);
@@ -67,7 +69,9 @@ const getUserExistService = async (params) => {
 
 const getOrgUserService = async (params) => {
   try {
-    const data = await userQuery('GET_ORG_USERS', params);
+    const data = {};
+    data.activeUsers = await userQuery('GET_ORG_ACTIVE_USERS', params);
+    data.inactiveUsers = await userQuery('GET_ORG_INACTIVE_USERS', params);
     return data;
   } catch (error) {
     logger.error('get org user service', error);

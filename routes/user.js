@@ -125,7 +125,7 @@ router.get('/api/v1/users', async (req, res) => {
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
-      data.details = details;
+      data = details;
       data.message = 'Fetched Details Successfully';
     } else {
       responseType = CUSTOM_RESPONSE;
@@ -198,7 +198,7 @@ router.get('/api/v1/org/users', async (req, res) => {
       if (res) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.details = res;
+        data = res;
         data.message = 'Fetched Details Successfully';
       } else {
         responseType = CUSTOM_RESPONSE;
