@@ -78,6 +78,7 @@ const userQuery = async (queryType, params = {}) => {
                       org_name = '${params.org_name}',
                       industry_id = ${params.industry_id},
                       industry_name = '${params.industry_name}'
+                      ${params.is_active == true || params.is_active == false ? `, is_active = ${params.is_active}` : ''}
                   WHERE user_id = ${params.user_id};
             `;
         break;
