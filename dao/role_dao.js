@@ -19,6 +19,12 @@ const roleQuery = async (queryType, params = {}) => {
       case 'GET_PERMISSIONS':
         query1 = `SELECT * FROM permissions;`;
         break;
+      case 'CHECK_IF_ROLE_IN_USE':
+        query1 = `SELECT * FROM users WHERE role_id = ${params.role_id};`;
+        break;
+      case 'DELETE_ROLE':
+        query1 = `DELETE FROM roles WHERE role_id = ${params.role_id};`;
+        break;
     }
 
     return new Promise((resolve, reject) => {

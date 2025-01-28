@@ -15,6 +15,7 @@ const {
   getSingleRoleService,
   createRoleService,
   getPermissionsService,
+  deleteRoleService,
 } = require('../service/role_service');
 const { validate } = require('../utils/helper');
 
@@ -150,6 +151,46 @@ router.get('/api/v1/permissions', async (req, res) => {
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error('get permissions route', err);
+    res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
+router.delete('/api/v1/roles/:role_id/delete', async (req, res) => {
+  try {
+    const {
+      params: { role_id = 0 },
+    } = req;
+    const { isValid, errors } = validate({}, {}, { role_id });
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    if (isValid) {
+      let details = await deleteRoleService(req.params);
+      if (details) {
+        responseType = SUCCESS;
+        statusCode = STATUS_CODE_SUCCESS;
+        data.message = 'Deleted role successfully';
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
+        customResponse.statusCode = statusCode;
+        customResponse.message = 'This role is in use';
+        customResponse.messageCode = statusCode;
+      }
+    } else {
+      responseType = customResponse;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.statusCode = statusCode;
+      customResponse.message = Object.values(errors)
+        .flatMap((err) => Object.values(err))
+        .filter((msg) => msg)
+        .join(', ');
+    }
+    let response = setResponse(responseType, '', data, customResponse);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error('delete role route', err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });

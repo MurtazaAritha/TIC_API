@@ -42,9 +42,23 @@ const getPermissionsService = async () => {
   }
 };
 
+const deleteRoleService = async (params) => {
+  try {
+    let roleDetails = await roleQuery('CHECK_IF_ROLE_IN_USE', params);
+    if (roleDetails && roleDetails.length == 0) {
+      await roleQuery('DELETE_ROLE', params);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    logger.error('delete role service', error);
+  }
+};
+
 module.exports = {
   getRoleService,
   getSingleRoleService,
   createRoleService,
   getPermissionsService,
+  deleteRoleService,
 };
