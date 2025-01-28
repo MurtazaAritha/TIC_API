@@ -17,19 +17,19 @@ const authenticate = async (bearerToken) => {
         }
       } else {
         const { email = null, user_id = null, org_id = null } = decode;
-        // const [{ user_id: db_user_id } = {}] = await loginQuery(
-        //   'CHECK_IF_USER_EXISTS',
-        //   { email },
-        // );
-        // if (user_id === db_user_id) {
-        data.isValid = true;
-        data.details = {
-          email,
-          user_id,
-          org_id,
-        };
-        // }
-        // return data;
+        const [{ user_id: db_user_id } = {}] = await loginQuery(
+          'CHECK_IF_USER_EXISTS',
+          { email },
+        );
+        if (user_id === db_user_id) {
+          data.isValid = true;
+          data.details = {
+            email,
+            user_id,
+            org_id,
+          };
+          return data;
+        }
       }
     });
     return data;

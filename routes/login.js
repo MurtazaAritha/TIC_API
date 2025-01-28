@@ -51,10 +51,10 @@ router.post('/api/v1/login', async (req, res) => {
         data.message = 'Logged in successfully';
       } else {
         responseType = CUSTOM_RESPONSE;
-        statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
+        statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = message;
-        customResponse.messageCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
+        customResponse.message = 'User not found';
+        customResponse.messageCode = STATUS_CODE_BAD_REQUEST;
       }
     } else {
       responseType = CUSTOM_RESPONSE;
