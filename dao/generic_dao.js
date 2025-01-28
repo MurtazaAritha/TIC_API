@@ -66,6 +66,12 @@ const genericQuery = async (queryType, params = {}) => {
                   );
                 `;
         break;
+      case 'CHECK_IF_INDUSTRY_IN_USE':
+        query1 = `SELECT industry_id FROM users WHERE industry_id = ${params.industry_id};`;
+        break;
+      case 'DELETE_INDUSTRY':
+        query1 = `DELETE FROM industries WHERE industry_id = ${params.industry_id};`;
+        break;
       case 'GET_SECTORS':
         query1 = `SELECT * FROM sectors;`;
         break;

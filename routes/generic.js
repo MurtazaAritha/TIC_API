@@ -25,6 +25,7 @@ const {
   getOrgDetailsExistService,
   getOrgCountService,
   deleteSectorService,
+  deleteIndustryService,
 } = require('../service/generic_service');
 
 router.get('/api/v1/organizations/exist', async (req, res) => {
@@ -346,6 +347,44 @@ router.post('/api/v1/industries/create', async (req, res) => {
   } catch (err) {
     logger.error('create industry route', err);
     res.status(500).send(err);
+  }
+});
+
+router.delete('/api/v1/industries/:industry_id/delete', async (req, res) => {
+  try {
+    let {
+      params: { industry_id = null },
+    } = req;
+    industry_id = parseInt(industry_id);
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    if (industry_id) {
+      let res = await deleteIndustryService(req.params);
+      if (res) {
+        responseType = SUCCESS;
+        statusCode = STATUS_CODE_SUCCESS;
+        data.message = 'Deleted industry Successfully';
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
+        customResponse.statusCode = statusCode;
+        customResponse.message = 'This industry is in use';
+        customResponse.messageCode = statusCode;
+      }
+    } else {
+      responseType = BAD_REQUEST;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.message = Object.values(errors)
+        .flatMap((err) => Object.values(err))
+        .filter((msg) => msg)
+        .join(', ');
+    }
+    let response = setResponse(responseType, '', data, customResponse);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error('delete industry route', err);
   }
 });
 

@@ -103,6 +103,22 @@ const createIndustryService = async (params) => {
   }
 };
 
+const deleteIndustryService = async (params) => {
+  try {
+    let industryDetails = await genericQuery(
+      'CHECK_IF_INDUSTRY_IN_USE',
+      params,
+    );
+    if (industryDetails && industryDetails.length == 0) {
+      await genericQuery('DELETE_INDUSTRY', params);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    logger.error('delete industry service', error);
+  }
+};
+
 const getSectorsService = async (params) => {
   try {
     const data = await genericQuery('GET_SECTORS', params);
@@ -182,4 +198,5 @@ module.exports = {
   getOrgDetailsExistService,
   getOrgCountService,
   deleteSectorService,
+  deleteIndustryService,
 };
