@@ -64,7 +64,7 @@ const userQuery = async (queryType, params = {}) => {
                   SET
                       org_id = ${params.org_id},
                       role_id = ${params.role_id},
-                      role_name = ${params.role_name},
+                      role_name = '${params.role_name}',
                       user_first_name = '${params.user_first_name}',
                       user_last_name = '${params.user_last_name}',
                       user_profile = '${params.user_profile}',
