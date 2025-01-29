@@ -22,6 +22,7 @@ const {
   updateUserService,
   getOrgUserCountService,
   getSaUserCountService,
+  deleteUserService,
 } = require('../service/user_service');
 
 router.post('/api/v1/user/create', async (req, res) => {
@@ -338,6 +339,46 @@ router.get('/api/v1/sa/userCount', async (req, res) => {
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error('get sa user count route', err);
+    res.status(500).send(err);
+  }
+});
+
+router.post('/api/v1/users/:user_id/updateActive', async (req, res) => {
+  try {
+    let {
+      params: { user_id = 0 },
+      query: { is_active },
+    } = req;
+    let data = {};
+    let responseType = '';
+    let statusCode = '';
+    let customResponse = {};
+    const { isValid, errors } = validate({}, {}, { user_id });
+    if (isValid) {
+      let res = await deleteUserService({ user_id, is_active });
+      if (res) {
+        responseType = SUCCESS;
+        statusCode = STATUS_CODE_SUCCESS;
+        data.message = 'Updated User Successfully';
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_BAD_REQUEST;
+        customResponse.statusCode = statusCode;
+        customResponse.message = 'Failed to delete user';
+        customResponse.messageCode = statusCode;
+      }
+    } else {
+      responseType = CUSTOM_RESPONSE;
+      statusCode = STATUS_CODE_BAD_REQUEST;
+      customResponse.message = Object.values(errors)
+        .flatMap((err) => Object.values(err))
+        .filter((msg) => msg)
+        .join(', ');
+    }
+    let response = setResponse(responseType, '', data, customResponse);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error('User update active route', err);
     res.status(500).send(err);
   }
 });

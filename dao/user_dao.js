@@ -88,8 +88,8 @@ const userQuery = async (queryType, params = {}) => {
                   WHERE user_id = ${params.user_id};
             `;
         break;
-      case 'DELETE_USER':
-        query1 = ``;
+      case 'UPADTE_USER_STATUS':
+        query1 = `UPDATE users SET is_active = ${params.is_active} WHERE user_id = ${params.user_id};`;
         break;
     }
 
