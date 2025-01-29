@@ -26,7 +26,24 @@ const createRegulatoryService = async (params) => {
   }
 };
 
+const deleteRegulatoryService = async (params) => {
+  try {
+    let regulatoryDetails = await regulatoryQuery(
+      'CHECK_IF_REGULATORY_IN_USE',
+      params,
+    );
+    if (regulatoryDetails && regulatoryDetails.length == 0) {
+      await regulatoryQuery('DELETE_REGULATORY', params);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    logger.error('delete regulatory service', error);
+  }
+};
+
 module.exports = {
   getRegulatoryService,
   createRegulatoryService,
+  deleteRegulatoryService,
 };

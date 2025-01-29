@@ -16,6 +16,12 @@ const regulatoryQuery = async (queryType, params = {}) => {
       case 'GET_SINGLE_REGULATORY':
         query1 = `SELECT * FROM regulatory_standard WHERE standard_id = ${params.standard_id};`;
         break;
+      case 'CHECK_IF_REGULATORY_IN_USE':
+        query1 = `SELECT * FROM projects WHERE regulatory_standard = (SELECT standard_name FROM regulatory_standard WHERE standard_id = ${params.standard_id});`;
+        break;
+      case 'DELETE_REGULATORY':
+        query1 = `DELETE FROM regulatory_standard WHERE standard_id = ${params.standard_id};`;
+        break;
     }
 
     return new Promise((resolve, reject) => {
