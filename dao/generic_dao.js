@@ -8,7 +8,9 @@ const genericQuery = async (queryType, params = {}) => {
     let query1 = '';
     switch (queryType) {
       case 'GET_ORGANIZATIONS':
-        query1 = `SELECT * FROM organizations;`;
+        query1 = `SELECT * FROM organizations 
+                  ORDER BY created_date DESC;
+                `;
         break;
       case 'GET_ORGANIZATION_COUNT':
         query1 = `SELECT count(org_id) as count FROM organizations;`;
