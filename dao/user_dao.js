@@ -8,16 +8,16 @@ const userQuery = async (queryType, params = {}) => {
     let query1 = '';
     switch (queryType) {
       case 'GET_SA_ACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE is_active = 1;`;
+        query1 = `SELECT * FROM users WHERE is_active = 1 ORDER BY created_date DESC;`;
         break;
       case 'GET_SA_INACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE is_active = 0;`;
+        query1 = `SELECT * FROM users WHERE is_active = 0 ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_ACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1;`;
+        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1 ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_INACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 0;`;
+        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 0 ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_ACTIVE_USER_COUNT':
         query1 = `SELECT count(user_id) as count FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1;`;
