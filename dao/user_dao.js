@@ -22,8 +22,11 @@ const userQuery = async (queryType, params = {}) => {
       case 'GET_ORG_USER_COUNT':
         query1 = `SELECT count(user_id) as count FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1;`;
         break;
-      case 'GET_SA_USER_COUNT':
+      case 'GET_SA_ACTIVE_USER_COUNT':
         query1 = `select count(user_id) as count FROM users WHERE is_active = 1;`;
+        break;
+      case 'GET_SA_INACTIVE_USER_COUNT':
+        query1 = `select count(user_id) as count FROM users WHERE is_active = 0;`;
         break;
       case 'GET_SINGLE_USER':
         query1 = `SELECT * FROM users WHERE user_id = ${params.user_id} AND is_active = 1;`;

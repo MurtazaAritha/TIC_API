@@ -94,7 +94,8 @@ const getSACountService = async () => {
     let data = {};
     let details = await projectQuery('GET_SA_PROJECT_COUNTS');
     data.details = details[0] ? details[0] : {};
-    data.userCount = await userQuery('GET_SA_USER_COUNT');
+    data.activeUserCount = await userQuery('GET_SA_ACTIVE_USER_COUNT');
+    data.inactiveUserCount = await userQuery('GET_SA_INACTIVE_USER_COUNT');
     data.orgCount = await genericQuery('GET_ORGANIZATION_COUNT');
     return data;
   } catch (error) {

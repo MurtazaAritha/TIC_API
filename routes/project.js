@@ -170,7 +170,7 @@ router.get('/api/v1/org/projects/counts', async (req, res) => {
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
     if (isValid) {
-      let details = await getOrgCountService(req.query);
+      let details = await getOrgCountService({org_id, industry_id});
       if (details) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
@@ -201,9 +201,6 @@ router.get('/api/v1/org/projects/counts', async (req, res) => {
 
 router.get('/api/v1/sa/projects/counts', async (req, res) => {
   try {
-    let {
-      query: {},
-    } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';
