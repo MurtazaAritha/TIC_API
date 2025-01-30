@@ -2,7 +2,7 @@ const { logger } = require('../utils/logger');
 const { userQuery } = require('../dao/user_dao');
 const { generateRandomPassword } = require('../utils/helper');
 const { loginQuery } = require('../dao/login_dao');
-// const { smtpTransporter } = require('../config/aws_config');
+const { smtpTransporter } = require('../config/aws_config');
 
 const insertUserService = async (params) => {
   try {
@@ -12,6 +12,79 @@ const insertUserService = async (params) => {
     const res = await userQuery('CREATE_USER', params);
     let user_id = res?.insertId ? res.insertId : 0;
     if (user_id) {
+      const roleKeywords = ['admin', 'super admin', 'org super admin'];
+      let isAdmin = roleKeywords.some((keyword) =>
+        params.role_name.toLowerCase().includes(keyword.toLowerCase()),
+      );
+      if (isAdmin) {
+        const mailOptions = {
+          from: process.env.FROM,
+          to: params.user_email.toLowerCase(),
+          text: params.user_password,
+          subject: 'Welcome to Regunova AI – Your Admin Account is Ready!',
+          html: `<style>
+                    p {
+                      color: black;
+                    }
+                  </style>
+                  <p>Dear ${params.user_first_name} ${params.user_last_name},</p>
+                  <p>I hope you are doing well.</p>
+                  <p>We are thrilled to welcome you to Regunova! You have been added as an admin, granting you full access to manage and oversee your organization's account.</p>
+                  <p>Below are your login credentials to access your account:</p>
+                  <p><b>Username:</b> ${params.user_email}</p>
+                  <p><b>Temporary Password:</b> ${params.user_password}</p>
+                  <p>To log in click on the button below:</p>
+                  <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${process.env.FRONTEND_URL}/login"/>Login</button>
+                  <p>For security purposes, we will require you to update your password after your first login.</p>
+                  <p>As an admin, you can:</p>
+                  <ul>
+                    <li>Add Users for your organization.</li>
+                    <li>Manage user permissions and settings.</li>
+                  </ul>
+                  <p>Thank you for choosing Regunova. We are excited to have you on board!</p>
+                  </br>
+                  </br>
+                  <p>Sincerely,</p>
+                  <p>Customer Support Team</p>
+                  <p>Regunova AI</p>
+                  <p>support@regunova.ai</p></br> 
+                `,
+        };
+
+        await smtpTransporter.sendMail(mailOptions);
+      } else {
+        const mailOptions = {
+          from: process.env.FROM,
+          to: params.user_email.toLowerCase(),
+          // text: params.user_password,
+          subject: 'Welcome to Regunova AI – Your User Account is Ready!',
+          html: `<style>
+                    p {
+                      color: black;
+                    }
+                  </style>
+                  <p>Dear ${params.user_first_name} ${params.user_last_name},</p>
+                  <p>I hope you are doing well.</p>
+                  <p>We are thrilled to welcome you to Regunova! You have been added as a user, granting you access to manage and run projects for your organization.</p>
+                  <p>Below are your login credentials to access your account:</p>
+                  <p><b>Username:</b> ${params.user_email}</p>
+                  <p><b>Temporary Password:</b> ${params.user_password}</p>
+                  <p>To log in click on the button below:</p>
+                  <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${process.env.FRONTEND_URL}/login"/>Login</button>
+                  <p>For security purposes, we will require you to update your password after your first login.</p>
+                  <p>Thank you for choosing Regunova. We are excited to have you on board!</p>
+                  </br>
+                  </br>
+                  <p>Sincerely,</p>
+                  <p>Customer Support Team</p>
+                  <p>Regunova AI</p>
+                  <p>support@regunova.ai</p></br>
+                `,
+        };
+
+        await smtpTransporter.sendMail(mailOptions);
+      }
+
       data = await userQuery('GET_SINGLE_USER', { user_id });
     }
     return data;

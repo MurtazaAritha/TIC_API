@@ -48,7 +48,7 @@ const deleteFromS3 = async (params) => {
 const smtpTransporter = nodemailer.createTransport({
   port: process.env.SMTP_PORT,
   host: process.env.SMTP_HOST,
-  secure: true,
+  secure: false,
   auth: {
     user: process.env.SMTP_USERNAME,
     pass: process.env.SMTP_PASSWORD,
