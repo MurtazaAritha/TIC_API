@@ -45,7 +45,8 @@ const projectQuery = async (queryType, params = {}) => {
                                           'last_run', p.last_run,
                                           'created_at', p.created_at,
                                           'updated_at', p.updated_at,
-                                          'isActive', p.isActive
+                                          'isActive', p.isActive,
+                                          'invited_user_list', p.invited_user_list
                                       )
                                   )
                                   FROM projects p
@@ -97,7 +98,8 @@ const projectQuery = async (queryType, params = {}) => {
                               'last_run', p.last_run,
                               'created_at', p.created_at,
                               'updated_at', p.updated_at,
-                              'isActive', p.isActive
+                              'isActive', p.isActive,
+                              'invited_user_list', p.invited_user_list
                           )
                       ) AS projects
                   FROM 
@@ -160,6 +162,7 @@ const projectQuery = async (queryType, params = {}) => {
                       ${params.history ? `, history` : ''}
                       ${params.no_of_runs ? `, no_of_runs` : ''}
                       ${params.base64 ? `, base64` : ''}
+                      ${params.invited_user_list ? `, invited_user_list` : ''}
                   ) 
                   VALUES (
                       '${params.project_name}',
@@ -183,6 +186,7 @@ const projectQuery = async (queryType, params = {}) => {
                       ${params.history ? `, '${JSON.stringify(params.history)}'` : ''}
                       ${params.no_of_runs ? `, ${params.no_of_runs}` : ''}
                       ${params.base64 ? `, '${JSON.stringify(params.base64)}'` : ''}
+                      ${params.invited_user_list ? `, '${JSON.stringify(params.invited_user_list)}'` : ''}
                   );
                   `;
         break;
@@ -214,6 +218,7 @@ const projectQuery = async (queryType, params = {}) => {
                               ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
                               ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
                               ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
+                              ${params.invited_user_list ? `, invited_user_list = '${JSON.stringify(params.invited_user_list)}'` : ''}
                         `;
 
         // ${params.complianceAssesment ? `, complianceAssesment = '${JSON.stringify(params.complianceAssesment)}'` : ''}
@@ -354,7 +359,8 @@ const projectQuery = async (queryType, params = {}) => {
                       created_by_id, 
                       created_by_name, 
                       updated_at, 
-                      isActive 
+                      isActive, 
+                      invited_user_list 
                   FROM projects 
                   WHERE org_id = ${params.org_id} 
                   ORDER BY created_at DESC 
