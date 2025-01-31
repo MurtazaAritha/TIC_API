@@ -247,10 +247,13 @@ const projectQuery = async (queryType, params = {}) => {
                       SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) AS draft_count,
                       SUM(CASE WHEN status = 'In Progress' THEN 1 ELSE 0 END) AS in_progress_count,
                       SUM(CASE WHEN status = 'Success' THEN 1 ELSE 0 END) AS success_count,
-                      SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed_count
-                  FROM projects 
+                      SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed_count,
+                      SUM(CASE WHEN JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON)) THEN 1 ELSE 0 END) AS invited_projects_count
+                  FROM projects
                   WHERE 
-                    created_by_id = ${params.user_id};`;
+                      created_by_id = ${params.user_id} 
+                      OR JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON));  -- Check for invited projects
+                  `;
         break;
       case 'GET_ORG_PROJECT_COUNTS':
         query1 = `SELECT
