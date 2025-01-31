@@ -20,6 +20,7 @@ const {
   getProjectCountService,
   getOrgProjectService,
   getUserCreatedProjectService,
+  getUserInvitedProjectService,
   getOrgCountService,
   getSACountService,
   getSATopProjectService,
@@ -370,10 +371,12 @@ router.get('/api/v1/user/projects', async (req, res) => {
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
       let details = await getUserCreatedProjectService(req.query);
+      let invited_projects = await getUserInvitedProjectService(req.query);
       if (details) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = details;
+        data.invited_projects = invited_projects;
         data.message = 'Fetched Details Successfully';
       } else {
         responseType = CUSTOM_RESPONSE;

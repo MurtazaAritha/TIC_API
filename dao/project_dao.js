@@ -59,11 +59,22 @@ const projectQuery = async (queryType, params = {}) => {
                   GROUP BY o.org_id, o.sector_id;
             `;
         break;
+      case 'GET_USER_INVITED_PROJECTS':
+        query1 = `SELECT * 
+                  FROM projects
+                  WHERE JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON))
+                  ORDER BY 
+                      CASE 
+                          WHEN status = 'Draft' THEN 1 
+                          ELSE 2 
+                      END, 
+                      last_run DESC;
+                `;
+        break;
       case 'GET_USER_CREATED_PROJECTS':
         query1 = `SELECT * 
                   FROM projects
-                  WHERE (created_by_id = ${params.user_id} 
-                        OR JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON)))  -- Check if the user is in invited_user_list
+                  WHERE created_by_id = ${params.user_id} 
                   ORDER BY 
                       CASE 
                           WHEN status = 'Draft' THEN 1 

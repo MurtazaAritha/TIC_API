@@ -77,6 +77,15 @@ const getUserCreatedProjectService = async (params) => {
   }
 };
 
+const getUserInvitedProjectService = async (params) => {
+  try {
+    const data = await projectQuery('GET_USER_INVITED_PROJECTS', params);
+    return data;
+  } catch (error) {
+    logger.error('Get user invited project service', error);
+  }
+};
+
 const getOrgCountService = async (params) => {
   try {
     const data = {};
@@ -150,6 +159,7 @@ module.exports = {
   getProjectCountService,
   getOrgProjectService,
   getUserCreatedProjectService,
+  getUserInvitedProjectService,
   getOrgCountService,
   getSACountService,
   getSATopProjectService,
