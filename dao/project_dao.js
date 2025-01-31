@@ -62,7 +62,8 @@ const projectQuery = async (queryType, params = {}) => {
       case 'GET_USER_CREATED_PROJECTS':
         query1 = `SELECT * 
                   FROM projects
-                  WHERE created_by_id = ${params.user_id} 
+                  WHERE (created_by_id = ${params.user_id} 
+                        OR JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON)))  -- Check if the user is in invited_user_list
                   ORDER BY 
                       CASE 
                           WHEN status = 'Draft' THEN 1 
