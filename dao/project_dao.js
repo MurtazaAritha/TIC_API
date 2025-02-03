@@ -228,6 +228,8 @@ const projectQuery = async (queryType, params = {}) => {
                               ${params.complianceAssesment ? `, complianceAssesment = '${params.complianceAssesment}'` : ''}
                               ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ''}
                               ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
+                              ${params.success_count ? ` , success_count = ${params.success_count}` : ''}
+                              ${params.fail_count ? ` , fail_count = ${params.fail_count}` : ''}
                               ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
                               ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
                               ${params.invited_user_list ? `, invited_user_list = '${JSON.stringify(params.invited_user_list)}'` : ''}
