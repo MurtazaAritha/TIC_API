@@ -34,7 +34,11 @@ const insertUserService = async (params) => {
                   <p><b>Username:</b> ${params.user_email}</p>
                   <p><b>Temporary Password:</b> ${params.user_password}</p>
                   <p>To log in click on the button below:</p>
-                  <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${process.env.FRONTEND_URL}"/>Login</button>
+                  <a href="http://44.196.170.163:3000/login" style="text-decoration: none;">
+                    <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
+                      Login
+                    </button>
+                  </a>
                   <p>For security purposes, we will require you to update your password after your first login.</p>
                   <p>As an admin, you can:</p>
                   <ul>
@@ -70,7 +74,11 @@ const insertUserService = async (params) => {
                   <p><b>Username:</b> ${params.user_email}</p>
                   <p><b>Temporary Password:</b> ${params.user_password}</p>
                   <p>To log in click on the button below:</p>
-                  <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${process.env.FRONTEND_URL}"/>Login</button>
+                  <a href="http://44.196.170.163:3000/login" style="text-decoration: none;">
+                    <button style="width: 250px; height: 40px; background-color: rgb(7, 39, 107); border-radius: 6px; border: none; color: white; padding: 10px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
+                      Login
+                    </button>
+                  </a>
                   <p>For security purposes, we will require you to update your password after your first login.</p>
                   <p>Thank you for choosing Regunova. We are excited to have you on board!</p>
                   </br>
