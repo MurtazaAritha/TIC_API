@@ -72,10 +72,8 @@ router.get('/api/v1/roles/:role_id', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
-      customResponse.messageCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
@@ -180,9 +178,8 @@ router.delete('/api/v1/roles/:role_id/delete', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)

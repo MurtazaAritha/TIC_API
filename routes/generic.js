@@ -51,10 +51,8 @@ router.get('/api/v1/organizations/exist', async (req, res) => {
         data.message = 'Organization name and email are not exists';
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
-      customResponse.messageCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
@@ -212,10 +210,8 @@ router.post('/api/v1/organizations/create', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
-      customResponse.messageCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
@@ -336,10 +332,8 @@ router.post('/api/v1/industries/create', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
-      customResponse.messageCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
@@ -377,7 +371,7 @@ router.delete('/api/v1/industries/:industry_id/delete', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = BAD_REQUEST;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
@@ -489,10 +483,8 @@ router.post('/api/v1/sectors/create', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = customResponse;
+      responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.statusCode = statusCode;
-      customResponse.messageCode = statusCode;
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
@@ -530,12 +522,12 @@ router.delete('/api/v1/sectors/:sector_id/delete', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = CUSTOM_RESPONSE;
-      statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.message = Object.values(errors)
-        .flatMap((err) => Object.values(err))
-        .filter((msg) => msg)
-        .join(', ');
+     responseType = CUSTOM_RESPONSE;
+     statusCode = STATUS_CODE_BAD_REQUEST;
+     customResponse.message = Object.values(errors)
+       .flatMap((err) => Object.values(err))
+       .filter((msg) => msg)
+       .join(', ');
     }
     let response = setResponse(responseType, '', data, customResponse);
     res.status(statusCode).send(response);
