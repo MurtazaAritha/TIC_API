@@ -72,10 +72,11 @@ router.get('/api/v1/roles/:role_id', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = BAD_REQUEST;
+      responseType = customResponse;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      customResponse.message = 'Details are required';
-      message = Object.values(errors)
+      customResponse.statusCode = statusCode;
+      customResponse.messageCode = statusCode;
+      customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
         .join(', ');

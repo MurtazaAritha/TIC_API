@@ -41,9 +41,11 @@ router.get('/api/v1/certificates', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = BAD_REQUEST;
+      responseType = customResponse;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      message = Object.values(errors)
+      customResponse.statusCode = statusCode;
+      customResponse.messageCode = statusCode;
+      customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
         .join(', ');
@@ -81,9 +83,11 @@ router.get('/api/v1/certificates/:certificate_id', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = BAD_REQUEST;
+      responseType = customResponse;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      message = Object.values(errors)
+      customResponse.statusCode = statusCode;
+      customResponse.messageCode = statusCode;
+      customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
         .join(', ');
@@ -139,9 +143,11 @@ router.post('/api/v1/certificate/create', async (req, res) => {
         customResponse.messageCode = statusCode;
       }
     } else {
-      responseType = BAD_REQUEST;
+      responseType = customResponse;
       statusCode = STATUS_CODE_BAD_REQUEST;
-      message = Object.values(errors)
+      customResponse.statusCode = statusCode;
+      customResponse.messageCode = statusCode;
+      customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
         .join(', ');
