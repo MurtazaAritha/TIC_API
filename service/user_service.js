@@ -16,6 +16,7 @@ const insertUserService = async (params) => {
       let isAdmin = roleKeywords.some((keyword) =>
         params.role_name.toLowerCase().includes(keyword.toLowerCase()),
       );
+      const currentYear = new Date().getFullYear();
       if (isAdmin) {
         const mailOptions = {
           from: process.env.FROM,
@@ -51,7 +52,12 @@ const insertUserService = async (params) => {
                   <p>Sincerely,</p>
                   <p>Customer Support Team</p>
                   <p>Regunova AI</p>
-                  <p>support@regunova.ai</p></br> 
+                  <p>support@regunova.ai</p>
+                  </br>
+                  </br>
+                  </br>
+                  <p style="font-size: 10px;"> <i>Regunova and Regunova Logo are trademarks of Regunova Inc © ${currentYear} All rights reserved.</i></p>
+                  <p style="font-size: 10px;"><i>This email may contain privileged or confidential information. If you are not the intended recipient (1) you may not disclose, use, distribute, copy, or rely upon this message or attachment(s); and (2) please notify the sender and then delete this message and any attachment(s). Regunova AI and its affiliates disclaim all liability for any errors, omissions, corruption, or viruses in any message or any attachments.</i></p>
                 `,
         };
 
@@ -86,7 +92,12 @@ const insertUserService = async (params) => {
                   <p>Sincerely,</p>
                   <p>Customer Support Team</p>
                   <p>Regunova AI</p>
-                  <p>support@regunova.ai</p></br>
+                  <p>support@regunova.ai</p>
+                  </br>
+                  </br>
+                  </br>
+                  <p style="font-size: 10px;"> <i>Regunova and Regunova Logo are trademarks of Regunova Inc © ${currentYear} All rights reserved.</i></p>
+                  <p style="font-size: 10px;"><i>This email may contain privileged or confidential information. If you are not the intended recipient (1) you may not disclose, use, distribute, copy, or rely upon this message or attachment(s); and (2) please notify the sender and then delete this message and any attachment(s). Regunova AI and its affiliates disclaim all liability for any errors, omissions, corruption, or viruses in any message or any attachments.</i></p>
                 `,
         };
 
