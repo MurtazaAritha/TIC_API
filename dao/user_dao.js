@@ -8,16 +8,113 @@ const userQuery = async (queryType, params = {}) => {
     let query1 = '';
     switch (queryType) {
       case 'GET_SA_ACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE is_active = 1 ORDER BY created_date DESC;`;
+        query1 = `SELECT 
+                      user_id, 
+                      user_email, 
+                      user_address, 
+                      user_first_name, 
+                      user_last_name, 
+                      user_phone_no, 
+                      user_profile, 
+                      created_by, 
+                      created_date, 
+                      updated_by, 
+                      updated_date, 
+                      sector_id, 
+                      sector_name, 
+                      org_id, 
+                      org_name, 
+                      industry_id, 
+                      industry_name, 
+                      role_id, 
+                      role_name, 
+                      is_active, 
+                      password_updated_date 
+                  FROM users 
+                  WHERE is_active = 1 
+                  ORDER BY created_date DESC;`;
         break;
       case 'GET_SA_INACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE is_active = 0 ORDER BY created_date DESC;`;
+        query1 = `SELECT 
+                      user_id, 
+                      user_email, 
+                      user_address, 
+                      user_first_name, 
+                      user_last_name, 
+                      user_phone_no, 
+                      user_profile, 
+                      created_by, 
+                      created_date, 
+                      updated_by, 
+                      updated_date, 
+                      sector_id, 
+                      sector_name, 
+                      org_id, 
+                      org_name, 
+                      industry_id, 
+                      industry_name, 
+                      role_id, 
+                      role_name, 
+                      is_active, 
+                      password_updated_date 
+                  FROM users 
+                  WHERE is_active = 0 
+                  ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_ACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1 ORDER BY created_date DESC;`;
+        query1 = `SELECT 
+                      user_id, 
+                      user_email, 
+                      user_address, 
+                      user_first_name, 
+                      user_last_name, 
+                      user_phone_no, 
+                      user_profile, 
+                      created_by, 
+                      created_date, 
+                      updated_by, 
+                      updated_date, 
+                      sector_id, 
+                      sector_name, 
+                      org_id, 
+                      org_name, 
+                      industry_id, 
+                      industry_name, 
+                      role_id, 
+                      role_name, 
+                      is_active, 
+                      password_updated_date  
+                  FROM users 
+                  WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} 
+                      AND is_active = 1 
+                  ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_INACTIVE_USERS':
-        query1 = `SELECT * FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 0 ORDER BY created_date DESC;`;
+        query1 = `SELECT user_id, 
+                      user_email, 
+                      user_address, 
+                      user_first_name, 
+                      user_last_name, 
+                      user_phone_no, 
+                      user_profile, 
+                      created_by, 
+                      created_date, 
+                      updated_by, 
+                      updated_date, 
+                      sector_id, 
+                      sector_name, 
+                      org_id, 
+                      org_name, 
+                      industry_id, 
+                      industry_name, 
+                      role_id, 
+                      role_name, 
+                      is_active, 
+                      password_updated_date 
+                  FROM users 
+                  WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} 
+                      AND is_active = 0 
+                  ORDER BY created_date DESC;`;
         break;
       case 'GET_ORG_ACTIVE_USER_COUNT':
         query1 = `SELECT count(user_id) as count FROM users WHERE org_id = ${params.org_id} ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''} AND is_active = 1;`;
@@ -32,7 +129,28 @@ const userQuery = async (queryType, params = {}) => {
         query1 = `select count(user_id) as count FROM users WHERE is_active = 0;`;
         break;
       case 'GET_SINGLE_USER':
-        query1 = `SELECT * FROM users WHERE user_id = ${params.user_id} AND is_active = 1;`;
+        query1 = `SELECT user_email, 
+                      user_address, 
+                      user_first_name, 
+                      user_last_name, 
+                      user_phone_no, 
+                      user_profile, 
+                      created_by, 
+                      created_date, 
+                      updated_by, 
+                      updated_date, 
+                      sector_id, 
+                      sector_name, 
+                      org_id, 
+                      org_name, 
+                      industry_id, 
+                      industry_name, 
+                      role_id, 
+                      role_name, 
+                      is_active, 
+                      password_updated_date 
+                  FROM users 
+                  WHERE user_id = ${params.user_id} AND is_active = 1;`;
         break;
       case 'CREATE_USER':
         query1 = `INSERT INTO users (
