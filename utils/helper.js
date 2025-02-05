@@ -114,10 +114,24 @@ const generateRandomPassword = () => {
   return password;
 };
 
+const getExpiryTimeStamp = () => {
+  const now = new Date();
+  const utcTimestamp = now.toISOString().replace('T', ' ').slice(0, 19);
+
+  // Set the expiry time to 3 days from the current time
+  const noOfMinutes = 3 * 24 * 60; // 3 days in minutes
+
+  const expiryTimeStamp = new Date(
+    new Date(utcTimestamp).getTime() + noOfMinutes * 60000,
+  );
+  return expiryTimeStamp;
+};
+
 module.exports = {
   validate,
   getOtp,
   getToken,
   getRefreshToken,
   generateRandomPassword,
+  getExpiryTimeStamp,
 };

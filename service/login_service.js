@@ -16,47 +16,63 @@ const loginService = async (email, password) => {
   try {
     let loginParams = { email, password };
     let loginResObj = {};
+    let message = '';
 
-    let [{ user_id: personId = null, user_password = null } = {}] =
-      await loginQuery('CHECK_IF_USER_EXISTS', loginParams);
-    if (!personId) {
-      loginResObj.message = INVALID_EMAIL;
-      return loginResObj;
-    }
-    if (password != user_password) {
-      loginResObj.message = INVALID_PASSWORD;
-      return loginResObj;
-    }
-    const userDetails =
-      (await loginQuery('GET_USER_DETAILS', loginParams)) || [];
-    const user_id = userDetails[0].user_id;
-    const org_id = userDetails[0].org_id ? userDetails[0].org_id : 0;
-    if (Array.isArray(userDetails) && userDetails.length > 0) {
-      let data = {
-        email,
-        user_id,
-        org_id,
-      };
+    let [
+      {
+        user_id: personId = null,
+        user_password = null,
+        user_password_expiry = null,
+      } = {},
+    ] = await loginQuery('CHECK_IF_USER_EXISTS', loginParams);
+    const currentTimestamp = new Date();
 
-      // what and all we have to consider for generating the tokens
+    // Compare expiry date with current date
+    if (user_password_expiry === null) {
+      if (!personId) {
+        loginResObj.message = INVALID_EMAIL;
+        return loginResObj;
+      }
+      if (password != user_password) {
+        loginResObj.message = INVALID_PASSWORD;
+        return loginResObj;
+      }
+      const userDetails =
+        (await loginQuery('GET_USER_DETAILS', loginParams)) || [];
+      const user_id = userDetails[0].user_id;
+      const org_id = userDetails[0].org_id ? userDetails[0].org_id : 0;
+      if (Array.isArray(userDetails) && userDetails.length > 0) {
+        let data = {
+          email,
+          user_id,
+          org_id,
+        };
 
-      const token = getToken(data);
-      // const tokenHash = crypto.createHash('md5').update(token).digest('hex');
-      await loginQuery('UPDATE_USER_TOKEN', { tokenHash: token, user_id });
-      const refreshToken = getRefreshToken(data);
-      // const refreshTokenHash = crypto
-      //   .createHash('md5')
-      //   .update(refreshToken)
-      //   .digest('hex');
-      await loginQuery('UPDATE_REFRESH_TOKEN', {
-        refreshTokenHash: refreshToken,
-        user_id,
-      });
+        // what and all we have to consider for generating the tokens
 
-      loginResObj.token = token;
-      loginResObj.refreshToken = refreshToken;
-      loginResObj.userDetails = userDetails;
-      loginResObj.user_id = user_id;
+        const token = getToken(data);
+        // const tokenHash = crypto.createHash('md5').update(token).digest('hex');
+        await loginQuery('UPDATE_USER_TOKEN', { tokenHash: token, user_id });
+        const refreshToken = getRefreshToken(data);
+        // const refreshTokenHash = crypto
+        //   .createHash('md5')
+        //   .update(refreshToken)
+        //   .digest('hex');
+        await loginQuery('UPDATE_REFRESH_TOKEN', {
+          refreshTokenHash: refreshToken,
+          user_id,
+        });
+
+        loginResObj.token = token;
+        loginResObj.refreshToken = refreshToken;
+        loginResObj.userDetails = userDetails;
+        loginResObj.user_id = user_id;
+      }
+    } else {
+      if (user_password_expiry && currentTimestamp > user_password_expiry) {
+        message = 'User password has expired.';
+        return { message };
+      } 
     }
     return loginResObj;
   } catch (error) {

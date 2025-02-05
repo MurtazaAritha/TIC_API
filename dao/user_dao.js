@@ -51,7 +51,8 @@ const userQuery = async (queryType, params = {}) => {
                       sector_name, 
                       org_name, 
                       industry_id, 
-                      industry_name
+                      industry_name,
+                      user_password_expiry
                   ) VALUES (
                       ${params.org_id},
                       ${params.role_id},
@@ -68,7 +69,8 @@ const userQuery = async (queryType, params = {}) => {
                       '${params.sector_name}',
                       '${params.org_name}',
                       ${params.industry_id},
-                      '${params.industry_name}'
+                      '${params.industry_name}',
+                      '${params.user_password_expiry}'
                   );`;
         break;
       case 'UPDATE_USER':

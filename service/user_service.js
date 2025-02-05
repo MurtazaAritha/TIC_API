@@ -1,6 +1,9 @@
 const { logger } = require('../utils/logger');
 const { userQuery } = require('../dao/user_dao');
-const { generateRandomPassword } = require('../utils/helper');
+const {
+  generateRandomPassword,
+  getExpiryTimeStamp,
+} = require('../utils/helper');
 const { loginQuery } = require('../dao/login_dao');
 const { smtpTransporter } = require('../config/aws_config');
 
@@ -8,6 +11,7 @@ const insertUserService = async (params) => {
   try {
     let data = {};
     params.user_password = generateRandomPassword();
+    params.user_password_expiry = getExpiryTimeStamp();
 
     const res = await userQuery('CREATE_USER', params);
     let user_id = res?.insertId ? res.insertId : 0;

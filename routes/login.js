@@ -42,19 +42,26 @@ router.post('/api/v1/login', async (req, res) => {
       // validations for email and password
       const { token, refreshToken, userDetails, user_id, message } =
         await loginService(email, password);
-      if (userDetails && user_id > 0) {
-        responseType = SUCCESS;
-        statusCode = STATUS_CODE_SUCCESS;
-        data.token = token;
-        data.refreshToken = refreshToken;
-        data.userDetails = userDetails;
-        data.message = 'Logged in successfully';
-      } else {
+      if(message && message.length > 0){
         responseType = CUSTOM_RESPONSE;
-        statusCode = STATUS_CODE_BAD_REQUEST;
-        customResponse.statusCode = statusCode;
-        customResponse.message = 'User not found';
+        statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
+        customResponse.message = message;
         customResponse.messageCode = STATUS_CODE_BAD_REQUEST;
+      } else {
+        if (userDetails && user_id > 0) {
+          responseType = SUCCESS;
+          statusCode = STATUS_CODE_SUCCESS;
+          data.token = token;
+          data.refreshToken = refreshToken;
+          data.userDetails = userDetails;
+          data.message = 'Logged in successfully';
+        } else {
+          responseType = CUSTOM_RESPONSE;
+          statusCode = STATUS_CODE_BAD_REQUEST;
+          customResponse.statusCode = statusCode;
+          customResponse.message = 'User not found';
+          customResponse.messageCode = STATUS_CODE_BAD_REQUEST;
+        }
       }
     } else {
       responseType = CUSTOM_RESPONSE;
