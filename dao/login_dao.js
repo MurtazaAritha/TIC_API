@@ -20,6 +20,7 @@ const loginQuery = async (queryType, params = {}) => {
                     u.refreshToken,
                     u.created_date,
                     u.updated_date,
+                    u.password_updated_date,
                     o.org_id,
                     o.org_name,
                     o.org_email,

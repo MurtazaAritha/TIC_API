@@ -28,7 +28,7 @@ const loginService = async (email, password) => {
     const currentTimestamp = new Date();
 
     // Compare expiry date with current date
-    if (user_password_expiry === null) {
+    if (user_password_expiry ===  null || currentTimestamp < user_password_expiry) {
       if (!personId) {
         loginResObj.message = INVALID_EMAIL;
         return loginResObj;
@@ -72,7 +72,7 @@ const loginService = async (email, password) => {
       if (user_password_expiry && currentTimestamp > user_password_expiry) {
         message = 'User password has expired.';
         return { message };
-      } 
+      }
     }
     return loginResObj;
   } catch (error) {
