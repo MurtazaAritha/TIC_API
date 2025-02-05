@@ -124,7 +124,14 @@ const getExpiryTimeStamp = () => {
   const expiryTimeStamp = new Date(
     new Date(utcTimestamp).getTime() + noOfMinutes * 60000,
   );
-  return expiryTimeStamp;
+
+  // Format the expiry timestamp to the desired format
+  const formattedExpiry = expiryTimeStamp
+    .toISOString()
+    .replace('T', ' ')
+    .slice(0, 19);
+  return formattedExpiry;
+
 };
 
 module.exports = {
