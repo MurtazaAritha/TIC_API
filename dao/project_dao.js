@@ -225,7 +225,6 @@ const projectQuery = async (queryType, params = {}) => {
                               last_run = '${params.last_run != null ? params.last_run : null}',
                               mapping_standards = '${params.mapping_standards}',
                               summary_report = '${JSON.stringify(params.summary_report)}'
-                              ${params.complianceAssesment ? `, complianceAssesment = '${params.complianceAssesment}'` : ''}
                               ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ''}
                               ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
                               ${params.success_count ? ` , success_count = ${params.success_count}` : ''}
@@ -244,6 +243,13 @@ const projectQuery = async (queryType, params = {}) => {
             "''",
           );
           query1 += `, checkListResponse = '${escapedCheckListResponse}'`;
+        }
+        if(params.complianceAssesment){
+          const escapedComplianceAssesment = params.complianceAssesment.replace(
+            /'/g,
+            "",
+          );
+          query1 += `, complianceAssesment = '${escapedComplianceAssesment}'`;
         }
         if (params.chatResponse) {
           query1 += `, chatResponse = '${JSON.stringify(params.chatResponse)}'`;
