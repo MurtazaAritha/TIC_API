@@ -3,10 +3,7 @@ const { projectQuery } = require('../dao/project_dao');
 const { userQuery } = require('../dao/user_dao');
 const { genericQuery } = require('../dao/generic_dao');
 const { smtpTransporter } = require('../config/aws_config');
-const fs = require('fs');
-const path = require('path');
 
-// const {} = require('../constants/response_constants');
 const projectService = async (params) => {
   try {
     let data = {};
@@ -15,8 +12,12 @@ const projectService = async (params) => {
     if (project_id) {
       data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
       params.invite_members.forEach((user) => {
-        sendMail({user_name: user.user_name, user_email: user.user_email, project_name: params.project_name});
-        console.log('Mail sent for ', user.user_email);
+        sendMail({
+          user_name: user.user_name,
+          user_email: user.user_email,
+          project_name: params.project_name,
+        });
+        console.log('Mail sent while creating project for ', user.user_email);
       });
     }
     return data;
@@ -28,8 +29,6 @@ const projectService = async (params) => {
 const sendMail = async (params) => {
   try {
     const currentYear = new Date().getFullYear();
-    // const logoPath = path.join(__dirname, 'utils/regunova.jpeg');
-    // const base64Image = fs.readFileSync(logoPath, 'base64');
     const mailOptions = {
       from: process.env.FROM,
       to: params.user_email.toLowerCase(),
@@ -54,12 +53,11 @@ const sendMail = async (params) => {
                   <p>Customer Support Team</p>
                   <p>Regunova AI</p>
                   <p>support@regunova.ai</p>
-                 
+                  <img src="https://ticimages.s3.us-east-1.amazonaws.com/Regunovalogo.jpeg" alt="Regunova Logo" style="width: 100px; height: 100px;"/>
                   </br>
                   <p style="font-size: 10px;"> <i>Regunova and Regunova Logo are trademarks of Regunova Inc © ${currentYear} All rights reserved.</i></p>
                   <p style="font-size: 10px;"><i>This email may contain privileged or confidential information. If you are not the intended recipient (1) you may not disclose, use, distribute, copy, or rely upon this message or attachment(s); and (2) please notify the sender and then delete this message and any attachment(s). Regunova AI and its affiliates disclaim all liability for any errors, omissions, corruption, or viruses in any message or any attachments.</i></p>
                 `,
-      //  <img src="data:image/jpeg;base64,${base64Image}" alt="Regunova Logo" style="width: 100px; height: 100px;"/>
     };
     await smtpTransporter.sendMail(mailOptions);
   } catch (error) {
@@ -92,7 +90,7 @@ const projectUpdateService = async (params) => {
     let project_id = params.project_id;
     if (project_id) {
       data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
-      let [{ invited_user_list = []} = {}] = await projectQuery(
+      let [{ invited_user_list = [] } = {}] = await projectQuery(
         'GET_PROJECT_INVITED_MEMBERS',
         { project_id: params.project_id },
       );
@@ -101,8 +99,12 @@ const projectUpdateService = async (params) => {
       );
       if (newInvitedUserList.length > 0) {
         newInvitedUserList.forEach((user) => {
-          sendMail({user_name: user.user_name, user_email: user.user_email, project_name: params.project_name});
-          console.log('Mail sent for ', user.user_email);
+          sendMail({
+            user_name: user.user_name,
+            user_email: user.user_email,
+            project_name: params.project_name,
+          });
+          console.log('Mail sent while updating project for ', user.user_email);
         });
       }
     }
