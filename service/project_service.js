@@ -15,9 +15,8 @@ const projectService = async (params) => {
     if (project_id) {
       data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
       params.invite_members.forEach((user) => {
-        console.log(user.user_email);
         sendMail({user_name: user.user_name, user_email: user.user_email, project_name: params.project_name});
-        console.log('Mail sent');
+        console.log('Mail sent for ', user.user_email);
       });
     }
     return data;
@@ -93,6 +92,19 @@ const projectUpdateService = async (params) => {
     let project_id = params.project_id;
     if (project_id) {
       data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
+      let [{ invited_user_list = []} = {}] = await projectQuery(
+        'GET_PROJECT_INVITED_MEMBERS',
+        { project_id: params.project_id },
+      );
+      let newInvitedUserList = params.invite_members.filter(
+        (user) => !invited_user_list.includes(user.user_id),
+      );
+      if (newInvitedUserList.length > 0) {
+        newInvitedUserList.forEach((user) => {
+          sendMail({user_name: user.user_name, user_email: user.user_email, project_name: params.project_name});
+          console.log('Mail sent for ', user.user_email);
+        });
+      }
     }
     return data;
   } catch (error) {

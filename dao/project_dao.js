@@ -251,6 +251,12 @@ const projectQuery = async (queryType, params = {}) => {
 
         query1 += ` WHERE project_id = ${params.project_id};`;
         break;
+      case 'GET_PROJECT_INVITED_MEMBERS':
+        query1 = `SELECT invited_user_list 
+                  FROM projects 
+                  WHERE project_id = ${params.project_id};
+                `;
+        break;
       case 'DELETE_PROJECT':
         query1 = ``;
         break;
