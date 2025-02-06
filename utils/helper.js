@@ -34,7 +34,7 @@ const validate = (
 
   // Validate emails
   Object.entries(emails).forEach(([key, item]) => {
-    if (!item.match(EMAIL)) {
+    if (!item?.match(EMAIL)) {
       setError('emails', key, `Field ${key} is not a valid email`);
     }
   });
@@ -48,7 +48,7 @@ const validate = (
 
   // Validate passwords
   Object.entries(passwords).forEach(([key, item]) => {
-    if (!item.match(PASSWORD)) {
+    if (!item?.match(PASSWORD)) {
       setError('passwords', key, `Field ${key} is not a valid password`);
     }
   });
@@ -57,7 +57,7 @@ const validate = (
   Object.entries(dates).forEach(([key, item]) => {
     // Check if the date matches the correct format 'YYYY-MM-DD'
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!item.match(dateRegex)) {
+    if (!item?.match(dateRegex)) {
       setError('dates', key, `Field ${key} is not a valid date format`);
     } else {
       // Check if the date is valid using the Date object

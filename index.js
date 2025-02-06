@@ -19,6 +19,7 @@ const Role = require('./routes/role');
 const Certificate = require('./routes/certificate');
 const Chat = require('./routes/chat');
 const Regulatories = require('./routes/regulatory');
+const Notifications = require('./routes/notification');
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -98,6 +99,7 @@ app.use(Role);
 app.use(Certificate);
 app.use(Chat);
 app.use(Regulatories);
+app.use(Notifications);
 
 const port = process.env.SERVER_PORT;
 
