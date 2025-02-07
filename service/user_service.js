@@ -6,16 +6,34 @@ const {
 } = require('../utils/helper');
 const { loginQuery } = require('../dao/login_dao');
 const { smtpTransporter } = require('../config/aws_config');
+const { notificationQuery } = require('../dao/notification_dao');
 
 const insertUserService = async (params) => {
   try {
     let data = {};
     params.user_password = generateRandomPassword();
     params.user_password_expiry = getExpiryTimeStamp();
+    const type = 'USER_CREATION';
 
     const res = await userQuery('CREATE_USER', params);
     let user_id = res?.insertId ? res.insertId : 0;
     if (user_id) {
+      await notificationQuery('CREATE_USER_CREATION_NOTIFICATION', {
+        notification_message: `Welcome on board ${params.user_first_name} ${params.user_last_name}`,
+        user_id,
+        type,
+      });
+      let organizationAdmins = await userQuery('GET_ORGANIZATION_ADMIN', {
+        organization_id: params.org_id,
+      });
+      const orgAdminArray = organizationAdmins[0]?.org_admin;
+      for (const admin of orgAdminArray) {
+        await notificationQuery('CREATE_USER_CREATION_NOTIFICATION', {
+          notification_message: 'New user has been added to your organization',
+          user_id: admin,
+          type,
+        });
+      }
       const roleKeywords = ['admin', 'super admin', 'org super admin'];
       let isAdmin = roleKeywords.some((keyword) =>
         params.role_name.toLowerCase().includes(keyword.toLowerCase()),

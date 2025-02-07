@@ -13,7 +13,11 @@ const notificationQuery = async (queryType, params = {}) => {
       case 'UPDATE_NOTIFICATION':
         query1 = `UPDATE notifications SET is_read = 1 WHERE notification_id IN (${params.notifications}) AND user_id = ${params.user_id};`;
         break;
-      // Add other cases as needed
+      case 'CREATE_USER_CREATION_NOTIFICATION':
+        query1 = `INSERT INTO notifications (user_id, type, notification_message) 
+                    VALUES (${params.user_id}, '${params.type}', '${params.notification_message}');
+                  `;
+        break;
     }
 
     return new Promise((resolve, reject) => {

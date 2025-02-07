@@ -115,9 +115,6 @@ router.get('/api/v1/users/exist', async (req, res) => {
 
 router.get('/api/v1/users', async (req, res) => {
   try {
-    const {
-      body: {},
-    } = req;
     let data = {};
     let responseType = '';
     let statusCode = '';

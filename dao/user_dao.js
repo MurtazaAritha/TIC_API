@@ -216,6 +216,9 @@ const userQuery = async (queryType, params = {}) => {
       case 'UPADTE_USER_STATUS':
         query1 = `UPDATE users SET is_active = ${params.is_active} WHERE user_id = ${params.user_id};`;
         break;
+      case 'GET_ORGANIZATION_ADMIN':
+        query1 = `SELECT JSON_ARRAYAGG(user_id) AS org_admin FROM users WHERE role_name = 'Org Super Admin' AND org_id = ${params.organization_id};`;
+        break;
     }
 
     return new Promise((resolve, reject) => {
