@@ -226,7 +226,7 @@ router.get('/api/v1/org/users', async (req, res) => {
 
 router.put('/api/v1/user/update', async (req, res) => {
   try {
-    const {
+    let {
       org_id,
       role_id,
       role_name,
@@ -234,8 +234,9 @@ router.put('/api/v1/user/update', async (req, res) => {
       user_last_name,
       user_email,
       user_phone_no,
-      user_id,
     } = req.body;
+    const { user_id } = req.query;
+    req.body.user_id = user_id;
     let data = {};
     let responseType = '';
     let statusCode = '';
