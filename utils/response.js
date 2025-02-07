@@ -5,7 +5,7 @@ const {
   SUCCESS,
   BAD_REQUEST,
   CUSTOM_RESPONSE,
-} = require('../constants/response_constants');
+} = require("../constants/response_constants");
 
 const setResponse = (type, message, data = {}, customResponse = {}) => {
   let response = {};
@@ -23,7 +23,11 @@ const setResponse = (type, message, data = {}, customResponse = {}) => {
       response.messageCode = STATUS_CODE_BAD_REQUEST;
       break;
     case CUSTOM_RESPONSE:
-      let { statusCode, message: customMessage = '', messageCode } = customResponse;
+      let {
+        statusCode,
+        message: customMessage = "",
+        messageCode,
+      } = customResponse;
       response.status = true;
       response.message = customMessage;
       response.statusCode = statusCode;
@@ -31,9 +35,9 @@ const setResponse = (type, message, data = {}, customResponse = {}) => {
       break;
     default:
       response.status = false;
-      response.message = '';
-      response.statusCode = '';
-      response.messageCode = '';
+      response.message = "";
+      response.statusCode = "";
+      response.messageCode = "";
   }
   response.data = data;
   return response;

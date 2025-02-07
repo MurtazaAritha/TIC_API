@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = new express.Router();
-const { setResponse } = require('../utils/response');
+const { setResponse } = require("../utils/response");
 const {
   SUCCESS,
   BAD_REQUEST,
@@ -8,53 +8,53 @@ const {
   STATUS_CODE_BAD_REQUEST,
   CUSTOM_RESPONSE,
   STATUS_CODE_INTERNAL_SERVER_ERROR,
-} = require('../constants/response_constants');
-const { logger } = require('../utils/logger');
+} = require("../constants/response_constants");
+const { logger } = require("../utils/logger");
 const {
   getRoleService,
   getSingleRoleService,
   createRoleService,
   getPermissionsService,
   deleteRoleService,
-} = require('../service/role_service');
-const { validate } = require('../utils/helper');
+} = require("../service/role_service");
+const { validate } = require("../utils/helper");
 
-router.get('/api/v1/roles', async (req, res) => {
+router.get("/api/v1/roles", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let results = await getRoleService();
     if (results) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data.details = results;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get roles route', err);
+    logger.error("get roles route", err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });
 
-router.get('/api/v1/roles/:role_id', async (req, res) => {
+router.get("/api/v1/roles/:role_id", async (req, res) => {
   try {
     let {
       params: { role_id = null },
     } = req;
     role_id = parseInt(role_id);
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { role_id });
     if (isValid) {
@@ -63,12 +63,12 @@ router.get('/api/v1/roles/:role_id', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -77,24 +77,24 @@ router.get('/api/v1/roles/:role_id', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get single role route', err);
+    logger.error("get single role route", err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });
 
-router.post('/api/v1/roles/create', async (req, res) => {
+router.post("/api/v1/roles/create", async (req, res) => {
   try {
     const {
-      body: { role_name = '', role_desc = '' },
+      body: { role_name = "", role_desc = "" },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({ role_name, role_desc });
     if (isValid) {
@@ -103,12 +103,12 @@ router.post('/api/v1/roles/create', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -117,64 +117,64 @@ router.post('/api/v1/roles/create', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('create role route', err);
+    logger.error("create role route", err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });
 
-router.get('/api/v1/permissions', async (req, res) => {
+router.get("/api/v1/permissions", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let results = await getPermissionsService();
     if (results) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data.details = results;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get permissions route', err);
+    logger.error("get permissions route", err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });
 
-router.delete('/api/v1/roles/:role_id/delete', async (req, res) => {
+router.delete("/api/v1/roles/:role_id/delete", async (req, res) => {
   try {
     const {
       params: { role_id = 0 },
     } = req;
     const { isValid, errors } = validate({}, {}, { role_id });
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     if (isValid) {
       let details = await deleteRoleService(req.params);
       if (details) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'Deleted role successfully';
+        data.message = "Deleted role successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'This role is in use';
+        customResponse.message = "This role is in use";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -183,12 +183,12 @@ router.delete('/api/v1/roles/:role_id/delete', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('delete role route', err);
+    logger.error("delete role route", err);
     res.status(STATUS_CODE_INTERNAL_SERVER_ERROR).send(err);
   }
 });

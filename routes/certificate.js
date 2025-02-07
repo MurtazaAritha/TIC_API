@@ -1,29 +1,29 @@
-const express = require('express');
+const express = require("express");
 const router = new express.Router();
-const { setResponse } = require('../utils/response');
+const { setResponse } = require("../utils/response");
 const {
   SUCCESS,
   BAD_REQUEST,
   STATUS_CODE_SUCCESS,
   STATUS_CODE_BAD_REQUEST,
   CUSTOM_RESPONSE,
-} = require('../constants/response_constants');
-const { logger } = require('../utils/logger');
+} = require("../constants/response_constants");
+const { logger } = require("../utils/logger");
 const {
   getCertificateService,
   getSingleCertificateService,
   insertCertificateService,
-} = require('../service/certificate_service');
-const { validate } = require('../utils/helper');
+} = require("../service/certificate_service");
+const { validate } = require("../utils/helper");
 
-router.get('/api/v1/certificates', async (req, res) => {
+router.get("/api/v1/certificates", async (req, res) => {
   try {
     let {
-      query: { user_id = '' },
+      query: { user_id = "" },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -32,12 +32,12 @@ router.get('/api/v1/certificates', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -46,24 +46,24 @@ router.get('/api/v1/certificates', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get certificates route', err);
+    logger.error("get certificates route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/certificates/:certificate_id', async (req, res) => {
+router.get("/api/v1/certificates/:certificate_id", async (req, res) => {
   try {
     let {
       params: { certificate_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { certificate_id });
     if (isValid) {
@@ -72,12 +72,12 @@ router.get('/api/v1/certificates/:certificate_id', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -86,17 +86,17 @@ router.get('/api/v1/certificates/:certificate_id', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get certificate route', err);
+    logger.error("get certificate route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/certificate/create', async (req, res) => {
+router.post("/api/v1/certificate/create", async (req, res) => {
   try {
     const {
       body: {
@@ -110,8 +110,8 @@ router.post('/api/v1/certificate/create', async (req, res) => {
       },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate(
       {
@@ -130,12 +130,12 @@ router.post('/api/v1/certificate/create', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Created Certificate Successfully';
+        data.message = "Created Certificate Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to create user';
+        customResponse.message = "Failed to create user";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -144,12 +144,12 @@ router.post('/api/v1/certificate/create', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('create certificate route', err);
+    logger.error("create certificate route", err);
     res.status(500).send(err);
   }
 });

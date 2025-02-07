@@ -1,8 +1,8 @@
-const AWS = require('aws-sdk');
-const nodemailer = require('nodemailer');
+const AWS = require("aws-sdk");
+const nodemailer = require("nodemailer");
 const s3 = new AWS.S3();
 AWS.config.update({ region: process.env.region });
-const { logger } = require('../utils/logger');
+const { logger } = require("../utils/logger");
 
 const uploadToS3 = async (params) => {
   return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ const getFromS3 = async (params) => {
         resolve(err);
       } else {
         var buffer = Buffer.from(res.Body);
-        var string64 = buffer.toString('base64');
+        var string64 = buffer.toString("base64");
         resolve(string64);
       }
     });

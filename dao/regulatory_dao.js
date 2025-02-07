@@ -1,25 +1,25 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const regulatoryQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_REGULATORIES':
+      case "GET_REGULATORIES":
         query1 = `SELECT * FROM regulatory_standard;`;
         break;
-      case 'CREATE_REGULATORY':
+      case "CREATE_REGULATORY":
         query1 = `INSERT INTO regulatory_standard (industry_id, industry_name, standard_name, standard_url) VALUES ('${params.industry_id}', '${params.industry_name}', '${params.standard_name}', '${params.standard_url}');`;
         break;
-      case 'GET_SINGLE_REGULATORY':
+      case "GET_SINGLE_REGULATORY":
         query1 = `SELECT * FROM regulatory_standard WHERE standard_id = ${params.standard_id};`;
         break;
-      case 'CHECK_IF_REGULATORY_IN_USE':
+      case "CHECK_IF_REGULATORY_IN_USE":
         query1 = `SELECT * FROM projects WHERE regulatory_standard = (SELECT standard_name FROM regulatory_standard WHERE standard_id = ${params.standard_id});`;
         break;
-      case 'DELETE_REGULATORY':
+      case "DELETE_REGULATORY":
         query1 = `DELETE FROM regulatory_standard WHERE standard_id = ${params.standard_id};`;
         break;
     }
@@ -38,7 +38,7 @@ const regulatoryQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('regulatory dao', err);
+    logger.error("regulatory dao", err);
   }
 };
 

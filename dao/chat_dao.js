@@ -1,13 +1,13 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const chatQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case '':
+      case "":
         query1 = ``;
         break;
     }
@@ -26,7 +26,7 @@ const chatQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('chat dao', err);
+    logger.error("chat dao", err);
   }
 };
 

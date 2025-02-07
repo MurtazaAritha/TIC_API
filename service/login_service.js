@@ -1,22 +1,22 @@
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const jwt = require('jsonwebtoken');
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
-const { smtpTransporter } = require('../config/aws_config');
-const { loginQuery, forgotPasswordQuery } = require('../dao/login_dao');
-const { logger } = require('../utils/logger');
-const { getOtp, getToken, getRefreshToken } = require('../utils/helper');
+const { smtpTransporter } = require("../config/aws_config");
+const { loginQuery, forgotPasswordQuery } = require("../dao/login_dao");
+const { logger } = require("../utils/logger");
+const { getOtp, getToken, getRefreshToken } = require("../utils/helper");
 const {
   TOKEN_EXPIRED_ERR,
   INVALID_EMAIL,
   INVALID_PASSWORD,
-} = require('../constants/response_constants');
+} = require("../constants/response_constants");
 
 const loginService = async (email, password) => {
   try {
     let loginParams = { email, password };
     let loginResObj = {};
-    let message = '';
+    let message = "";
 
     let [
       {
@@ -24,11 +24,14 @@ const loginService = async (email, password) => {
         user_password = null,
         user_password_expiry = null,
       } = {},
-    ] = await loginQuery('CHECK_IF_USER_EXISTS', loginParams);
+    ] = await loginQuery("CHECK_IF_USER_EXISTS", loginParams);
     const currentTimestamp = new Date();
 
     // Compare expiry date with current date
-    if (user_password_expiry ===  null || currentTimestamp < user_password_expiry) {
+    if (
+      user_password_expiry === null ||
+      currentTimestamp < user_password_expiry
+    ) {
       if (!personId) {
         loginResObj.message = INVALID_EMAIL;
         return loginResObj;
@@ -38,7 +41,7 @@ const loginService = async (email, password) => {
         return loginResObj;
       }
       const userDetails =
-        (await loginQuery('GET_USER_DETAILS', loginParams)) || [];
+        (await loginQuery("GET_USER_DETAILS", loginParams)) || [];
       const user_id = userDetails[0].user_id;
       const org_id = userDetails[0].org_id ? userDetails[0].org_id : 0;
       if (Array.isArray(userDetails) && userDetails.length > 0) {
@@ -52,13 +55,13 @@ const loginService = async (email, password) => {
 
         const token = getToken(data);
         // const tokenHash = crypto.createHash('md5').update(token).digest('hex');
-        await loginQuery('UPDATE_USER_TOKEN', { tokenHash: token, user_id });
+        await loginQuery("UPDATE_USER_TOKEN", { tokenHash: token, user_id });
         const refreshToken = getRefreshToken(data);
         // const refreshTokenHash = crypto
         //   .createHash('md5')
         //   .update(refreshToken)
         //   .digest('hex');
-        await loginQuery('UPDATE_REFRESH_TOKEN', {
+        await loginQuery("UPDATE_REFRESH_TOKEN", {
           refreshTokenHash: refreshToken,
           user_id,
         });
@@ -70,13 +73,13 @@ const loginService = async (email, password) => {
       }
     } else {
       if (user_password_expiry && currentTimestamp > user_password_expiry) {
-        message = 'User password has expired.';
+        message = "User password has expired.";
         return { message };
       }
     }
     return loginResObj;
   } catch (error) {
-    logger.error('login service', error);
+    logger.error("login service", error);
   }
 };
 
@@ -86,7 +89,7 @@ const forgotPasswordService = async (params) => {
       isEmailSent: false,
     };
     const [{ user_id: userId = 0 }] = await loginQuery(
-      'CHECK_IF_USER_EXISTS',
+      "CHECK_IF_USER_EXISTS",
       params,
     );
     if (userId) {
@@ -108,11 +111,11 @@ const forgotPasswordService = async (params) => {
       // await smtpTransporter.sendMail(mailOptions);
       data.isEmailSent = true;
       data.userId = userId;
-      await forgotPasswordQuery('UPDATE_USER_OTP', { userHash: otp, userId });
+      await forgotPasswordQuery("UPDATE_USER_OTP", { userHash: otp, userId });
     }
     return data;
   } catch (error) {
-    logger.error('Forgot password service error:', error);
+    logger.error("Forgot password service error:", error);
     throw error;
   }
 };
@@ -126,10 +129,10 @@ const verifyOtpService = async (params) => {
     const [
       {
         user_id: userId = 0,
-        otpHash: storedOtpHash = '',
+        otpHash: storedOtpHash = "",
         // otp_expiry: otpExpiry,
       },
-    ] = await forgotPasswordQuery('GET_USER_OTP_DETAILS', params);
+    ] = await forgotPasswordQuery("GET_USER_OTP_DETAILS", params);
 
     if (userId) {
       const { otp } = params;
@@ -144,13 +147,13 @@ const verifyOtpService = async (params) => {
       // if (storedOtpHash === params.otp && isOtpNotExpired) {
       if (storedOtpHash === params.otp) {
         data.isOtpValid = true;
-        await forgotPasswordQuery('CLEAR_USER_OTP', { userId });
+        await forgotPasswordQuery("CLEAR_USER_OTP", { userId });
       }
     }
 
     return data;
   } catch (error) {
-    logger.error('Verify OTP service error', error);
+    logger.error("Verify OTP service error", error);
     throw error;
   }
 };
@@ -163,8 +166,8 @@ const refreshTokenService = async (refreshToken) => {
       isRefreshValid: true,
       isRefreshExpired: false,
     };
-    let token = '';
-    let refreshTokenNew = '';
+    let token = "";
+    let refreshTokenNew = "";
     await jwt.verify(
       refreshToken,
       jwtRefreshSecretKey,
@@ -185,7 +188,7 @@ const refreshTokenService = async (refreshToken) => {
                 refreshToken: referenceRefreshToken = null,
               } = {},
             ] = await loginQuery(
-              'CHECK_IF_USER_EXISTS',
+              "CHECK_IF_USER_EXISTS",
               checkRefreshTokenParams,
             );
             // const comparisionToken = crypto
@@ -200,7 +203,7 @@ const refreshTokenService = async (refreshToken) => {
               //   .createHash('md5')
               //   .update(token)
               //   .digest('hex');
-              await loginQuery('UPDATE_USER_TOKEN', {
+              await loginQuery("UPDATE_USER_TOKEN", {
                 tokenHash: token,
                 user_id,
               });
@@ -208,7 +211,7 @@ const refreshTokenService = async (refreshToken) => {
               //   .createHash('md5')
               //   .update(refreshTokenNew)
               //   .digest('hex');
-              await loginQuery('UPDATE_REFRESH_TOKEN', {
+              await loginQuery("UPDATE_REFRESH_TOKEN", {
                 refreshTokenHash: refreshTokenNew,
                 user_id,
               });
@@ -224,14 +227,14 @@ const refreshTokenService = async (refreshToken) => {
     data.token = token;
     data.refreshTokenNew = refreshTokenNew;
   } catch (err) {
-    logger.error('Refresh token service error:', err);
+    logger.error("Refresh token service error:", err);
   }
 };
 
 const resetPasswordService = async (params) => {
   try {
     const [{ user_id: userId = 0 } = {}] = await loginQuery(
-      'CHECK_IF_USER_EXISTS',
+      "CHECK_IF_USER_EXISTS",
       params,
     );
     if (userId > 0) {
@@ -240,24 +243,24 @@ const resetPasswordService = async (params) => {
       //   .update(password)
       //   .digest('hex');
       const passwordParams = { passwordHash: params.password, userId };
-      await forgotPasswordQuery('UPDATE_USER_PASSWORD', passwordParams);
+      await forgotPasswordQuery("UPDATE_USER_PASSWORD", passwordParams);
       return true;
     } else {
       return false;
     }
   } catch (error) {
-    logger.error('reset password service', error);
+    logger.error("reset password service", error);
   }
 };
 
 const logoutService = async (params) => {
   try {
     let isLoggedOut = false;
-    await loginQuery('USER_LOGOUT', params);
+    await loginQuery("USER_LOGOUT", params);
     isLoggedOut = true;
     return isLoggedOut;
   } catch (error) {
-    logger.error('logout service', error);
+    logger.error("logout service", error);
   }
 };
 

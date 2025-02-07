@@ -1,28 +1,28 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const roleQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_ROLES':
+      case "GET_ROLES":
         query1 = `SELECT * FROM roles;`;
         break;
-      case 'GET_SINGLE_ROLE':
+      case "GET_SINGLE_ROLE":
         query1 = `SELECT * FROM roles WHERE role_id = ${params.role_id};`;
         break;
-      case 'CREATE_ROLE':
+      case "CREATE_ROLE":
         query1 = `INSERT INTO roles (role_name, role_desc, permissions) VALUES ('${params.role_name}', '${params.role_desc}', '${JSON.stringify(params.permissions)}');`;
         break;
-      case 'GET_PERMISSIONS':
+      case "GET_PERMISSIONS":
         query1 = `SELECT * FROM permissions;`;
         break;
-      case 'CHECK_IF_ROLE_IN_USE':
+      case "CHECK_IF_ROLE_IN_USE":
         query1 = `SELECT * FROM users WHERE role_id = ${params.role_id};`;
         break;
-      case 'DELETE_ROLE':
+      case "DELETE_ROLE":
         query1 = `DELETE FROM roles WHERE role_id = ${params.role_id};`;
         break;
     }
@@ -41,7 +41,7 @@ const roleQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('role dao', err);
+    logger.error("role dao", err);
   }
 };
 

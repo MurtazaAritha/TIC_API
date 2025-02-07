@@ -1,19 +1,19 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const certificate = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_CERTIFICATES':
+      case "GET_CERTIFICATES":
         query1 = `SELECT * FROM certificates WHERE created_by_id = ${params.user_id};`;
         break;
-      case 'GET_SINGLE_CERTIFICATE':
+      case "GET_SINGLE_CERTIFICATE":
         query1 = `SELECT * FROM certificates WHERE certificate_id = ${params.certificate_id};`;
         break;
-      case 'CREATE_CERTIFICATE':
+      case "CREATE_CERTIFICATE":
         query1 = `INSERT INTO certificates (
                     certificate_name, 
                     certificate_subject, 
@@ -66,7 +66,7 @@ const certificate = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('certificate dao', err);
+    logger.error("certificate dao", err);
   }
 };
 

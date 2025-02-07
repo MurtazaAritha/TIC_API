@@ -1,40 +1,40 @@
-const { logger } = require('../utils/logger');
-const { userQuery } = require('../dao/user_dao');
+const { logger } = require("../utils/logger");
+const { userQuery } = require("../dao/user_dao");
 const {
   generateRandomPassword,
   getExpiryTimeStamp,
-} = require('../utils/helper');
-const { loginQuery } = require('../dao/login_dao');
-const { smtpTransporter } = require('../config/aws_config');
-const { notificationQuery } = require('../dao/notification_dao');
+} = require("../utils/helper");
+const { loginQuery } = require("../dao/login_dao");
+const { smtpTransporter } = require("../config/aws_config");
+const { notificationQuery } = require("../dao/notification_dao");
 
 const insertUserService = async (params) => {
   try {
     let data = {};
     params.user_password = generateRandomPassword();
     params.user_password_expiry = getExpiryTimeStamp();
-    const type = 'USER_CREATION';
+    const type = "USER_CREATION";
 
-    const res = await userQuery('CREATE_USER', params);
+    const res = await userQuery("CREATE_USER", params);
     let user_id = res?.insertId ? res.insertId : 0;
     if (user_id) {
-      await notificationQuery('CREATE_USER_CREATION_NOTIFICATION', {
+      await notificationQuery("CREATE_USER_CREATION_NOTIFICATION", {
         notification_message: `Welcome on board ${params.user_first_name} ${params.user_last_name}`,
         user_id,
         type,
       });
-      let organizationAdmins = await userQuery('GET_ORGANIZATION_ADMIN', {
+      let organizationAdmins = await userQuery("GET_ORGANIZATION_ADMIN", {
         organization_id: params.org_id,
       });
       const orgAdminArray = organizationAdmins[0]?.org_admin;
       for (const admin of orgAdminArray) {
-        await notificationQuery('CREATE_USER_CREATION_NOTIFICATION', {
-          notification_message: 'New user has been added to your organization',
+        await notificationQuery("CREATE_USER_CREATION_NOTIFICATION", {
+          notification_message: "New user has been added to your organization",
           user_id: admin,
           type,
         });
       }
-      const roleKeywords = ['admin', 'super admin', 'org super admin'];
+      const roleKeywords = ["admin", "super admin", "org super admin"];
       let isAdmin = roleKeywords.some((keyword) =>
         params.role_name.toLowerCase().includes(keyword.toLowerCase()),
       );
@@ -44,7 +44,7 @@ const insertUserService = async (params) => {
           from: process.env.FROM,
           to: params.user_email.toLowerCase(),
           text: params.user_password,
-          subject: 'Welcome to Regunova AI – Your Admin Account is Ready!',
+          subject: "Welcome to Regunova AI – Your Admin Account is Ready!",
           html: `<style>
                     p {
                       color: black;
@@ -88,7 +88,7 @@ const insertUserService = async (params) => {
           from: process.env.FROM,
           to: params.user_email.toLowerCase(),
           // text: params.user_password,
-          subject: 'Welcome to Regunova AI – Your User Account is Ready!',
+          subject: "Welcome to Regunova AI – Your User Account is Ready!",
           html: `<style>
                     p {
                       color: black;
@@ -126,31 +126,31 @@ const insertUserService = async (params) => {
         await smtpTransporter.sendMail(mailOptions);
       }
 
-      data = await userQuery('GET_SINGLE_USER', { user_id });
+      data = await userQuery("GET_SINGLE_USER", { user_id });
     }
     return data;
   } catch (error) {
-    logger.error('insert user service', error);
+    logger.error("insert user service", error);
   }
 };
 
 const getUserService = async () => {
   try {
     const data = {};
-    data.activeUsers = await userQuery('GET_SA_ACTIVE_USERS');
-    data.inactiveUsers = await userQuery('GET_SA_INACTIVE_USERS');
+    data.activeUsers = await userQuery("GET_SA_ACTIVE_USERS");
+    data.inactiveUsers = await userQuery("GET_SA_INACTIVE_USERS");
     return data;
   } catch (error) {
-    logger.error('get user service', error);
+    logger.error("get user service", error);
   }
 };
 
 const getSignleUserService = async (params) => {
   try {
-    const data = await userQuery('GET_SINGLE_USER', params);
+    const data = await userQuery("GET_SINGLE_USER", params);
     return data;
   } catch (error) {
-    logger.error('get single user service', error);
+    logger.error("get single user service", error);
   }
 };
 
@@ -158,63 +158,63 @@ const getUserExistService = async (params) => {
   try {
     try {
       const [{ user_id = null } = {}] = await loginQuery(
-        'CHECK_IF_USER_EXISTS',
+        "CHECK_IF_USER_EXISTS",
         params,
       );
       return user_id;
     } catch (error) {
-      logger.error('get single user service', error);
+      logger.error("get single user service", error);
     }
   } catch (error) {
-    logger.error('get user exist service', error);
+    logger.error("get user exist service", error);
   }
 };
 
 const getOrgUserService = async (params) => {
   try {
     const data = {};
-    data.activeUsers = await userQuery('GET_ORG_ACTIVE_USERS', params);
-    data.inactiveUsers = await userQuery('GET_ORG_INACTIVE_USERS', params);
+    data.activeUsers = await userQuery("GET_ORG_ACTIVE_USERS", params);
+    data.inactiveUsers = await userQuery("GET_ORG_INACTIVE_USERS", params);
     return data;
   } catch (error) {
-    logger.error('get org user service', error);
+    logger.error("get org user service", error);
   }
 };
 
 const updateUserService = async (params) => {
   try {
-    await userQuery('UPDATE_USER', params);
-    let data = await userQuery('GET_SINGLE_USER', { user_id: params.user_id });
+    await userQuery("UPDATE_USER", params);
+    let data = await userQuery("GET_SINGLE_USER", { user_id: params.user_id });
     return data;
   } catch (error) {
-    logger.error('update user service', error);
+    logger.error("update user service", error);
   }
 };
 
 const getOrgUserCountService = async (params) => {
   try {
-    const data = await userQuery('GET_ORG_USER_COUNT', params);
+    const data = await userQuery("GET_ORG_USER_COUNT", params);
     return data;
   } catch (error) {
-    logger.error('get org user count service', error);
+    logger.error("get org user count service", error);
   }
 };
 
 const getSaUserCountService = async (params) => {
   try {
-    const data = await userQuery('GET_SA_USER_COUNT', params);
+    const data = await userQuery("GET_SA_USER_COUNT", params);
     return data;
   } catch (error) {
-    logger.error('get sa user count service', error);
+    logger.error("get sa user count service", error);
   }
 };
 
 const deleteUserService = async (params) => {
   try {
-    await userQuery('UPADTE_USER_STATUS', params);
+    await userQuery("UPADTE_USER_STATUS", params);
     return true;
   } catch (error) {
-    logger.error('delete user service', error);
+    logger.error("delete user service", error);
   }
 };
 

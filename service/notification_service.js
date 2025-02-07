@@ -1,5 +1,5 @@
-const { logger } = require('../utils/logger');
-const { notificationQuery } = require('../dao/notification_dao');
+const { logger } = require("../utils/logger");
+const { notificationQuery } = require("../dao/notification_dao");
 
 const getNotificationsService = async (params) => {
   try {
@@ -9,7 +9,7 @@ const getNotificationsService = async (params) => {
     }
     return null;
   } catch (error) {
-    logger.error('get notifications service', error);
+    logger.error("get notifications service", error);
     throw error;
   }
 };
@@ -22,12 +22,10 @@ const updateNotificationService = async (params) => {
     }
     return null;
   } catch (error) {
-    logger.error('update notifications service', error);
+    logger.error("update notifications service", error);
     throw error;
   }
 };
-
-
 
 module.exports = {
   getNotificationsService,

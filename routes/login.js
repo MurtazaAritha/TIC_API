@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = new express.Router();
-const { setResponse } = require('../utils/response');
+const { setResponse } = require("../utils/response");
 const {
   loginService,
   forgotPasswordService,
@@ -8,7 +8,7 @@ const {
   refreshTokenService,
   resetPasswordService,
   logoutService,
-} = require('../service/login_service');
+} = require("../service/login_service");
 const {
   SUCCESS,
   STATUS_CODE_SUCCESS,
@@ -23,26 +23,26 @@ const {
   REFRESH_TOKEN_INVALID,
   INVALID_EMAIL,
   LOGOUT_SUCCESS,
-} = require('../constants/response_constants');
-const { logger } = require('../utils/logger');
-const { validate } = require('../utils/helper');
+} = require("../constants/response_constants");
+const { logger } = require("../utils/logger");
+const { validate } = require("../utils/helper");
 
-router.post('/api/v1/login', async (req, res) => {
+router.post("/api/v1/login", async (req, res) => {
   try {
     const {
-      body: { email = '', password = '' },
+      body: { email = "", password = "" },
     } = req;
 
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, { email });
     if (isValid && password && password.length > 0) {
       // validations for email and password
       const { token, refreshToken, userDetails, user_id, message } =
         await loginService(email, password);
-      if(message && message.length > 0){
+      if (message && message.length > 0) {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
         customResponse.message = message;
@@ -54,12 +54,12 @@ router.post('/api/v1/login', async (req, res) => {
           data.token = token;
           data.refreshToken = refreshToken;
           data.userDetails = userDetails;
-          data.message = 'Logged in successfully';
+          data.message = "Logged in successfully";
         } else {
           responseType = CUSTOM_RESPONSE;
           statusCode = STATUS_CODE_BAD_REQUEST;
           customResponse.statusCode = statusCode;
-          customResponse.message = 'User not found';
+          customResponse.message = "User not found";
           customResponse.messageCode = STATUS_CODE_BAD_REQUEST;
         }
       }
@@ -69,7 +69,7 @@ router.post('/api/v1/login', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
     let response = setResponse(
       responseType,
@@ -79,19 +79,19 @@ router.post('/api/v1/login', async (req, res) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('login route', err);
+    logger.error("login route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/forgotPassword/sendOtp', async (req, res) => {
+router.post("/api/v1/forgotPassword/sendOtp", async (req, res) => {
   try {
     const {
-      body: { email = '' },
+      body: { email = "" },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, { email });
     if (isValid) {
@@ -99,12 +99,12 @@ router.post('/api/v1/forgotPassword/sendOtp', async (req, res) => {
       if (isEmailSent && userId) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'OTP sent successfully to your email';
+        data.message = "OTP sent successfully to your email";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to send OTP email';
+        customResponse.message = "Failed to send OTP email";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -113,25 +113,25 @@ router.post('/api/v1/forgotPassword/sendOtp', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('forgot password route', err);
+    logger.error("forgot password route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/forgotPassword/verifyOtp', async (req, res) => {
+router.post("/api/v1/forgotPassword/verifyOtp", async (req, res) => {
   try {
     const {
-      body: { email = '', otp = '' },
+      body: { email = "", otp = "" },
     } = req;
 
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
 
     const { isValid, errors } = validate({ otp }, { email });
@@ -141,12 +141,12 @@ router.post('/api/v1/forgotPassword/verifyOtp', async (req, res) => {
       if (isOtpValid) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'OTP verified successfully';
+        data.message = "OTP verified successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_SUCCESS;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Invalid OTP';
+        customResponse.message = "Invalid OTP";
         customResponse.messageCode = STATUS_CODE_SUCCESS;
       }
     } else {
@@ -155,25 +155,25 @@ router.post('/api/v1/forgotPassword/verifyOtp', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
 
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('verify OTP route', err);
+    logger.error("verify OTP route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/resetPassword', async (req, res) => {
+router.post("/api/v1/resetPassword", async (req, res) => {
   try {
     const {
-      body: { email = '', password = '' },
+      body: { email = "", password = "" },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, { email }, {}, { password });
     if (isValid) {
@@ -195,7 +195,7 @@ router.post('/api/v1/resetPassword', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
     let response = setResponse(
       responseType,
@@ -205,18 +205,18 @@ router.post('/api/v1/resetPassword', async (req, res) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('post resetPassword route', err);
+    logger.error("post resetPassword route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/refreshToken', async (req, res) => {
+router.get("/api/v1/refreshToken", async (req, res) => {
   try {
     const {
-      body: { refreshToken = '' },
+      body: { refreshToken = "" },
     } = req;
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let data = {};
     const { isValid, errors } = validate({ refreshToken });
@@ -251,7 +251,7 @@ router.get('/api/v1/refreshToken', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
     let response = setResponse(
       responseType,
@@ -261,19 +261,19 @@ router.get('/api/v1/refreshToken', async (req, res) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get refreshToken route', err);
+    logger.error("get refreshToken route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/logout', async (req, res) => {
+router.post("/api/v1/logout", async (req, res) => {
   try {
     const {
       body: { user_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -286,7 +286,7 @@ router.post('/api/v1/logout', async (req, res) => {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Internal Server Error';
+        customResponse.message = "Internal Server Error";
         customResponse.messageCode = STATUS_CODE_INTERNAL_SERVER_ERROR;
       }
     } else {
@@ -295,7 +295,7 @@ router.post('/api/v1/logout', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
     let response = setResponse(
       responseType,
@@ -305,7 +305,7 @@ router.post('/api/v1/logout', async (req, res) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('logout route', err);
+    logger.error("logout route", err);
     res.status(500).send(err);
   }
 });

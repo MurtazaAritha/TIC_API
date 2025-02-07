@@ -1,11 +1,11 @@
-const { logger } = require('../utils/logger');
+const { logger } = require("../utils/logger");
 // const { chatQuery } = require('../dao/chat_dao');
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const FormData = require('form-data');
-const stream = require('stream');
-const { getFromS3 } = require('../config/aws_config');
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
+const FormData = require("form-data");
+const stream = require("stream");
+const { getFromS3 } = require("../config/aws_config");
 
 const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL;
 
@@ -21,7 +21,7 @@ const chatQuestionService = async (params) => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -32,27 +32,27 @@ const chatQuestionService = async (params) => {
     }
   } catch (error) {
     // Log the error and return a consistent structure
-    console.error('Chat question service error:', error);
-    return { success: false, error: 'An error occurred while fetching data' };
+    console.error("Chat question service error:", error);
+    return { success: false, error: "An error occurred while fetching data" };
   }
 };
 
 const uploadStandardChatService = async () => {
   try {
-    const filePath = path.join(__dirname, '../utils/IEC-61400-12-2022.pdf');
+    const filePath = path.join(__dirname, "../utils/IEC-61400-12-2022.pdf");
     const form = new FormData();
 
     // Append the PDF file to the form
     const fileStream = fs.createReadStream(filePath);
     if (!fileStream) {
-      console.log('fileStream isnot found');
+      console.log("fileStream isnot found");
     }
 
     // Append the PDF file to the form
-    form.append('file', fileStream, {
-      filename: 'your-file.pdf', // File name sent to the server
-      ContentType: 'multipart/form-data; boundary=----boundary123',
-      Accept: 'application/json',
+    form.append("file", fileStream, {
+      filename: "your-file.pdf", // File name sent to the server
+      ContentType: "multipart/form-data; boundary=----boundary123",
+      Accept: "application/json",
     });
 
     const apiUrl = `${PYTHON_SERVICE_URL}/uploadstd_chat/`;
@@ -61,7 +61,7 @@ const uploadStandardChatService = async () => {
       headers: {
         ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
         // Optional: Include your auth token if needed
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -71,7 +71,7 @@ const uploadStandardChatService = async () => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -81,7 +81,7 @@ const uploadStandardChatService = async () => {
       };
     }
   } catch (error) {
-    logger.error('Chat upload service error', error);
+    logger.error("Chat upload service error", error);
     return { response: false, error };
   }
 };
@@ -95,7 +95,7 @@ const uploadStandardChatService2 = async (imageKey) => {
     const response = await axios.post(apiUrl, form, {
       headers: {
         ...form.getHeaders(),
-        'User-Agent': 'MyCustomUserAgent/1.0',
+        "User-Agent": "MyCustomUserAgent/1.0",
       },
     });
 
@@ -103,7 +103,7 @@ const uploadStandardChatService2 = async (imageKey) => {
       return { success: true, data: response.data };
     } else {
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -113,7 +113,7 @@ const uploadStandardChatService2 = async (imageKey) => {
       };
     }
   } catch (error) {
-    console.error('Error during upload:', error);
+    console.error("Error during upload:", error);
     return { success: false, error: error.message };
   }
 };
@@ -127,7 +127,7 @@ const uploadStandardCheckListService2 = async (imageKey) => {
     const response = await axios.post(apiUrl, form, {
       headers: {
         ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -137,7 +137,7 @@ const uploadStandardCheckListService2 = async (imageKey) => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -147,7 +147,7 @@ const uploadStandardCheckListService2 = async (imageKey) => {
       };
     }
   } catch (error) {
-    logger.error('Chat upload service error', error);
+    logger.error("Chat upload service error", error);
     return { response: false, error };
   }
 };
@@ -161,7 +161,7 @@ const uploadProjectDocsService2 = async (imageKey) => {
     const response = await axios.post(apiUrl, form, {
       headers: {
         ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -171,7 +171,7 @@ const uploadProjectDocsService2 = async (imageKey) => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -181,13 +181,13 @@ const uploadProjectDocsService2 = async (imageKey) => {
       };
     }
   } catch (error) {
-    logger.error('Chat upload service error', error);
+    logger.error("Chat upload service error", error);
     return { response: false, error };
   }
 };
 
 const uploadStandardCheckListService = async () => {
-  const filePath = path.join(__dirname, '../utils/IEC-61400-12-2022.pdf');
+  const filePath = path.join(__dirname, "../utils/IEC-61400-12-2022.pdf");
 
   try {
     const form = new FormData();
@@ -195,14 +195,14 @@ const uploadStandardCheckListService = async () => {
     // Append the PDF file to the form
     const fileStream = fs.createReadStream(filePath);
     if (!fileStream) {
-      console.log('fileStream isnot found');
+      console.log("fileStream isnot found");
     }
 
     // Append the PDF file to the form
-    form.append('file', fileStream, {
-      filename: 'your-file.pdf', // File name sent to the server
-      ContentType: 'multipart/form-data; boundary=----boundary123',
-      Accept: 'application/json',
+    form.append("file", fileStream, {
+      filename: "your-file.pdf", // File name sent to the server
+      ContentType: "multipart/form-data; boundary=----boundary123",
+      Accept: "application/json",
     });
 
     const apiUrl = `${PYTHON_SERVICE_URL}/uploadstd_checklist_crt/`;
@@ -211,7 +211,7 @@ const uploadStandardCheckListService = async () => {
       headers: {
         ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
         // Optional: Include your auth token if needed
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -221,7 +221,7 @@ const uploadStandardCheckListService = async () => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -232,111 +232,135 @@ const uploadStandardCheckListService = async () => {
     }
   } catch (error) {
     // Handle errors and log them
-    console.error('Upload service error:', error);
-    return { success: false, error: 'An error occurred while uploading files' };
+    console.error("Upload service error:", error);
+    return { success: false, error: "An error occurred while uploading files" };
   }
 };
 
-const getFileDetailsFromS3 = async (imageKey) => {
+const getFileDetailsFromS3 = async (imageKeys) => {
   try {
-    const getParams = {
+    const form = new FormData();
+
+    const getParams = (imageKey) => ({
       Key: imageKey,
       Bucket: process.env.BUCKET_NAME,
-    };
+    });
 
-    let s3Object = await getFromS3(getParams);
+    for (let imageKey of imageKeys) {
+      // Fetch the image from S3
+      const s3Object = await getFromS3(getParams(imageKey));
 
-    // Step 2: Decode the base64 data to binary data
-    const binaryData = Buffer.from(s3Object, 'base64');
+      // Decode the base64 data to binary data
+      const binaryData = Buffer.from(s3Object, "base64");
 
-    const fileExtension = imageKey.split('.').pop();
+      // Extract the file extension from the image key
+      const fileExtension = imageKey.split(".").pop();
 
-    // Step 4: Define the file path to save the file with appropriate extension
-    const filePath = path.join(
-      __dirname,
-      `../utils/output-file.${fileExtension}`,
-    );
+      // Define the file path to save the file with appropriate extension
+      const filePath = path.join(
+        __dirname,
+        `../utils/output-file-${imageKey}.${fileExtension}`,
+      );
 
-    await fs.promises.writeFile(filePath, binaryData);
-    console.log('File written successfully!');
-    // Step 4: Create FormData and append the PDF file to the form
-    const form = new FormData();
-    const fileStream = fs.createReadStream(filePath);
+      // Write the binary data to the file system
+      await fs.promises.writeFile(filePath, binaryData);
+      console.log(`File written successfully for ${imageKey}`);
 
-    if (!fileStream) {
-      console.log('fileStream is not found');
+      // Create a file stream from the saved file
+      const fileStream = fs.createReadStream(filePath);
+
+      if (!fileStream) {
+        console.log(`fileStream is not found for ${imageKey}`);
+        continue;
+      }
+
+      // Append the file to the form data
+      form.append("file", fileStream, {
+        filename: `your-file-${imageKey}`, // File name sent to the server
+        ContentType: `application/${fileExtension}`, // Content type based on file extension
+        Accept: "application/json",
+      });
     }
 
-    form.append('file', fileStream, {
-      // filename: 'your-file.pdf', // File name sent to the server
-      ContentType: 'application/pdf', // Ensure content type matches the file type
-      Accept: 'application/json',
-    });
+    // Return the form containing all the files
     return form;
   } catch (error) {
     // Handle errors and log them
-    console.error('Upload service error:', error);
-    return { success: false, error: 'An error occurred while uploading files' };
+    console.error("Upload service error:", error);
+    return { success: false, error: "An error occurred while uploading files" };
   }
 };
 
-const getFileDetailsFromS3Service = async (imageKey) => {
+const getParams = (imageKey) => ({
+  Key: imageKey,
+  Bucket: process.env.BUCKET_NAME,
+});
+
+const getFileDetailsFromS3Service = async (imageKeys) => {
   try {
-    const getParams = {
-      Key: imageKey,
-      Bucket: process.env.BUCKET_NAME,
-    };
-
-    let s3Object = await getFromS3(getParams);
-
-    // Step 2: Decode the base64 data to binary data
-    const binaryData = Buffer.from(s3Object, 'base64');
-
-    const fileExtension = imageKey.split('.').pop();
-
-    // Step 4: Define the file path to save the file with appropriate extension
-    const filePath = path.join(
-      __dirname,
-      `../utils/output-file.${fileExtension}`,
-    );
-
-    await fs.promises.writeFile(filePath, binaryData);
-    console.log('File written successfully!');
     const form = new FormData();
-    const fileStream = fs.createReadStream(filePath);
 
-    if (!fileStream) {
-      console.log('fileStream is not found');
+    for (let imageKey of imageKeys) {
+      // Fetch the image from S3
+      const s3Object = await getFromS3(getParams(imageKey));
+
+      // Decode the base64 data to binary data
+      const binaryData = Buffer.from(s3Object, "base64");
+
+      // Extract the file extension from the image key
+      const fileExtension = imageKey.split(".").pop();
+
+      // Define the file path to save the file with appropriate extension
+      const filePath = path.join(
+        __dirname,
+        `../utils/output-file-${imageKey}.${fileExtension}`,
+      );
+
+      // Write the binary data to the file system
+      await fs.promises.writeFile(filePath, binaryData);
+      console.log(`File written successfully for ${imageKey}`);
+
+      // Create a file stream from the saved file
+      const fileStream = fs.createReadStream(filePath);
+
+      if (!fileStream) {
+        console.log(`fileStream is not found for ${imageKey}`);
+        continue;
+      }
+
+      // Append the file to the form data
+      form.append("file", fileStream, {
+        filename: `your-file-${imageKey}`, // File name sent to the server
+        ContentType: `application/${fileExtension}`, // Content type based on file extension
+        Accept: "application/json",
+      });
     }
 
-    form.append('files', fileStream, {
-      ContentType: 'application/pdf', // Ensure content type matches the file type
-      Accept: 'application/json',
-    });
+    // Return the form containing all the files
     return form;
   } catch (error) {
     // Handle errors and log them
-    console.error('Upload service error:', error);
-    return { success: false, error: 'An error occurred while uploading files' };
+    console.error("Upload service error:", error);
+    return { success: false, error: "An error occurred while uploading files" };
   }
 };
 
 const uploadProjectDocsService = async (params) => {
   try {
-    const filePath = path.join(__dirname, '../utils/project doc.pdf');
+    const filePath = path.join(__dirname, "../utils/project doc.pdf");
     const form = new FormData();
 
     // Append the PDF file to the form
     const fileStream = fs.createReadStream(filePath);
     if (!fileStream) {
-      console.log('fileStream isnot found');
+      console.log("fileStream isnot found");
     }
 
     // Append the PDF file to the form
-    form.append('file', fileStream, {
-      filename: 'your-file.pdf', // File name sent to the server
-      ContentType: 'multipart/form-data; boundary=----boundary123',
-      Accept: 'application/json',
+    form.append("file", fileStream, {
+      filename: "your-file.pdf", // File name sent to the server
+      ContentType: "multipart/form-data; boundary=----boundary123",
+      Accept: "application/json",
     });
 
     const apiUrl = `${PYTHON_SERVICE_URL}/upload_project_docs_summarize/`;
@@ -345,7 +369,7 @@ const uploadProjectDocsService = async (params) => {
       headers: {
         ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
         // Optional: Include your auth token if needed
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -355,7 +379,7 @@ const uploadProjectDocsService = async (params) => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -365,7 +389,7 @@ const uploadProjectDocsService = async (params) => {
       };
     }
   } catch (error) {
-    logger.error('Chat data service error', error);
+    logger.error("Chat data service error", error);
     return { response: false, error };
   }
 };
@@ -373,7 +397,7 @@ const uploadProjectDocsService = async (params) => {
 const chatDataService = async () => {
   try {
     const response = await fetch(`${PYTHON_SERVICE_URL}/api/data`, {
-      method: 'GET',
+      method: "GET",
     });
     if (response.ok) {
       const responseData = await response.json();
@@ -381,7 +405,7 @@ const chatDataService = async () => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -391,7 +415,7 @@ const chatDataService = async () => {
       };
     }
   } catch (error) {
-    logger.error('Chat data service error', error);
+    logger.error("Chat data service error", error);
     return { response: false, error };
   }
 };
@@ -412,7 +436,7 @@ const chatRunComplainceAssessmentService = async (requirements) => {
     const response = await axios.post(apiUrl, (requirements = requirements), {
       headers: {
         // ...form.getHeaders(), // Automatically set appropriate headers for multipart/form-data
-        'User-Agent': 'MyCustomUserAgent/1.0', // Add custom User-Agent header
+        "User-Agent": "MyCustomUserAgent/1.0", // Add custom User-Agent header
       },
     });
 
@@ -421,7 +445,7 @@ const chatRunComplainceAssessmentService = async (requirements) => {
     } else {
       // Handle non-OK responses
       console.error(
-        'Error: Non-OK response received',
+        "Error: Non-OK response received",
         response.status,
         response.statusText,
       );
@@ -432,8 +456,8 @@ const chatRunComplainceAssessmentService = async (requirements) => {
     }
   } catch (error) {
     // Log the error and return a consistent structure
-    console.error('Chat run complaince assessment service error:', error);
-    return { success: false, error: 'An error occurred while fetching data' };
+    console.error("Chat run complaince assessment service error:", error);
+    return { success: false, error: "An error occurred while fetching data" };
   }
 };
 

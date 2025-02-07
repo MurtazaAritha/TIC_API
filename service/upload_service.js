@@ -1,5 +1,5 @@
-const { logger } = require('../utils/logger');
-const { uploadToS3, getFromS3, deleteFromS3 } = require('../config/aws_config');
+const { logger } = require("../utils/logger");
+const { uploadToS3, getFromS3, deleteFromS3 } = require("../config/aws_config");
 
 const uploadFileToS3 = async (documents, type) => {
   try {
@@ -10,25 +10,25 @@ const uploadFileToS3 = async (documents, type) => {
       let base64Data = item;
 
       if (match) {
-        base64Data = item.replace(regex, ''); // Remove the base64 prefix
+        base64Data = item.replace(regex, ""); // Remove the base64 prefix
       }
 
-      const fileContent = Buffer.from(base64Data, 'base64');
+      const fileContent = Buffer.from(base64Data, "base64");
       const fileName =
-        `File_` + Math.random().toString(36).substring(6) + '.' + type;
+        `File_` + Math.random().toString(36).substring(6) + "." + type;
       const s3Params = {
         Bucket: process.env.BUCKET_NAME,
         Key: fileName,
         Body: fileContent,
-        ContentType: 'application/pdf',
-        ACL: 'public-read', // Allow public read access to this object
+        ContentType: "application/pdf",
+        ACL: "public-read", // Allow public read access to this object
       };
       let res = await uploadToS3(s3Params);
       data.push(res.Location);
     }
     return data;
   } catch (error) {
-    logger.error('upload file to s3  service', error);
+    logger.error("upload file to s3  service", error);
   }
 };
 
@@ -46,7 +46,7 @@ const getFileFromS3 = async (params) => {
     }
     return data;
   } catch (error) {
-    logger.error('get file from s3 service', error);
+    logger.error("get file from s3 service", error);
   }
 };
 
@@ -59,7 +59,7 @@ const deleteFileFromS3 = async (params) => {
     const response = await deleteFromS3(deleteParams);
     return response;
   } catch (error) {
-    logger.error('delete file from s3 service', error);
+    logger.error("delete file from s3 service", error);
   }
 };
 

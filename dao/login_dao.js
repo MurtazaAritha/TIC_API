@@ -1,13 +1,13 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const loginQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_USER_DETAILS':
+      case "GET_USER_DETAILS":
         query1 = `SELECT 
                     u.user_id,
                     u.user_first_name,
@@ -50,18 +50,18 @@ const loginQuery = async (queryType, params = {}) => {
                     AND u.user_password = '${params.password}';
                 `;
         break;
-      case 'UPDATE_USER_TOKEN':
+      case "UPDATE_USER_TOKEN":
         query1 = `UPDATE users SET token = '${params.tokenHash}' 
                 WHERE user_id = ${params.user_id};`;
         break;
-      case 'UPDATE_REFRESH_TOKEN':
+      case "UPDATE_REFRESH_TOKEN":
         query1 = `UPDATE users SET refreshToken = '${params.refreshTokenHash}' 
                 WHERE user_id = ${params.user_id};`;
         break;
-      case 'CHECK_IF_USER_EXISTS':
+      case "CHECK_IF_USER_EXISTS":
         query1 = `SELECT user_id, refreshToken, user_password, user_password_expiry FROM users WHERE user_email = '${params.email}' and is_active = 1;`;
         break;
-      case 'USER_LOGOUT':
+      case "USER_LOGOUT":
         query1 = `UPDATE users SET token = NULL, refreshToken = NULL WHERE user_id = '${params.user_id}';`;
         break;
     }
@@ -80,27 +80,27 @@ const loginQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('login dao', err);
+    logger.error("login dao", err);
   }
 };
 
 const forgotPasswordQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'UPDATE_USER_OTP':
+      case "UPDATE_USER_OTP":
         query1 = `UPDATE users SET otpHash = '${params.userHash}' WHERE user_id = ${params.userId};`;
         break;
-      case 'UPDATE_USER_PASSWORD':
+      case "UPDATE_USER_PASSWORD":
         query1 = `UPDATE users SET user_password = '${params.passwordHash}', user_password_expiry = NULL, password_updated_date = CURDATE() WHERE user_id = ${params.userId};`;
         break;
-      case 'VERIFY_USER_PASSWORD':
+      case "VERIFY_USER_PASSWORD":
         query1 = `SELECT user_id FROM users WHERE user_id = ${params.userId} AND user_password = '${params.userPassword}';`;
         break;
-      case 'GET_USER_OTP_DETAILS':
+      case "GET_USER_OTP_DETAILS":
         query1 = `SELECT user_id, otpHash FROM users WHERE user_email = '${params.email}';`;
         break;
-      case 'CLEAR_USER_OTP':
+      case "CLEAR_USER_OTP":
         query1 = `UPDATE users SET otpHash = NULL WHERE user_id = '${params.userId}';`;
         break;
     }
@@ -119,7 +119,7 @@ const forgotPasswordQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('forgot password dao', err);
+    logger.error("forgot password dao", err);
   }
 };
 

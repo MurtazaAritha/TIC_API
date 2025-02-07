@@ -1,12 +1,12 @@
-var winston = require('winston');
-require('winston-daily-rotate-file');
+var winston = require("winston");
+require("winston-daily-rotate-file");
 
 var transport = new winston.transports.DailyRotateFile({
-  filename: 'logs/tic-%DATE%.log',
-  datePattern: 'YYYY-MM-DD', // Log file per day
+  filename: "logs/tic-%DATE%.log",
+  datePattern: "YYYY-MM-DD", // Log file per day
   zippedArchive: false, // Disabled zippedArchive to keep .log files only
-  maxSize: '20m',
-  maxFiles: '365d',
+  maxSize: "20m",
+  maxFiles: "365d",
 });
 
 var logger = winston.createLogger({

@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = new express.Router();
-const { setResponse } = require('../utils/response');
-const { validate } = require('../utils/helper');
+const { setResponse } = require("../utils/response");
+const { validate } = require("../utils/helper");
 const {
   SUCCESS,
   BAD_REQUEST,
@@ -10,8 +10,8 @@ const {
   STATUS_CODE_INVALID_SUCCESS,
   STATUS_CODE_INTERNAL_SERVER_ERROR,
   CUSTOM_RESPONSE,
-} = require('../constants/response_constants');
-const { logger } = require('../utils/logger');
+} = require("../constants/response_constants");
+const { logger } = require("../utils/logger");
 const {
   projectService,
   getProjectService,
@@ -27,9 +27,9 @@ const {
   getOrgTopProjectService,
   getUserTopProjectService,
   getOrgRecentProjectService,
-} = require('../service/project_service');
+} = require("../service/project_service");
 
-router.post('/api/v1/project/create', async (req, res) => {
+router.post("/api/v1/project/create", async (req, res) => {
   try {
     const {
       body: {
@@ -54,8 +54,8 @@ router.post('/api/v1/project/create', async (req, res) => {
       },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({
       project_name,
@@ -68,12 +68,12 @@ router.post('/api/v1/project/create', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = response;
-        data.message = 'Project Created Successfully';
+        data.message = "Project Created Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to create project';
+        customResponse.message = "Failed to create project";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -82,51 +82,51 @@ router.post('/api/v1/project/create', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Project create route', err);
+    logger.error("Project create route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/projects', async (req, res) => {
+router.get("/api/v1/projects", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let details = await getProjectService();
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data.details = details;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get Projects route', err);
+    logger.error("Get Projects route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/projects/counts', async (req, res) => {
+router.get("/api/v1/projects/counts", async (req, res) => {
   try {
     let {
       query: { user_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -135,12 +135,12 @@ router.get('/api/v1/projects/counts', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = details[0];
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -149,39 +149,39 @@ router.get('/api/v1/projects/counts', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get Projects count details route', err);
+    logger.error("Get Projects count details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/projects/counts', async (req, res) => {
+router.get("/api/v1/org/projects/counts", async (req, res) => {
   try {
     let {
       query: { org_id = 0, industry_id = 0 },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
     if (isValid) {
-      let details = await getOrgCountService({org_id, industry_id});
+      let details = await getOrgCountService({ org_id, industry_id });
       if (details) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -190,52 +190,52 @@ router.get('/api/v1/org/projects/counts', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get org projects count details route', err);
+    logger.error("Get org projects count details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/sa/projects/counts', async (req, res) => {
+router.get("/api/v1/sa/projects/counts", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let details = await getSACountService();
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data = details;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get org projects count details route', err);
+    logger.error("Get org projects count details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/projects/:project_id', async (req, res) => {
+router.get("/api/v1/projects/:project_id", async (req, res) => {
   try {
     let {
       params: { project_id = null },
     } = req;
     // project_id = parseInt(project_id);
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { project_id });
     if (isValid) {
@@ -244,12 +244,12 @@ router.get('/api/v1/projects/:project_id', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -258,17 +258,17 @@ router.get('/api/v1/projects/:project_id', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get Single project route', err);
+    logger.error("Get Single project route", err);
     res.status(500).send(err);
   }
 });
 
-router.put('/api/v1/project/update', async (req, res) => {
+router.put("/api/v1/project/update", async (req, res) => {
   try {
     const {
       body: {
@@ -280,8 +280,8 @@ router.put('/api/v1/project/update', async (req, res) => {
       },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate(
       { project_name, project_no, project_description, regulatory_standard },
@@ -294,12 +294,12 @@ router.put('/api/v1/project/update', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = response;
-        data.message = 'Project Updated Successfully';
+        data.message = "Project Updated Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to update project';
+        customResponse.message = "Failed to update project";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -308,24 +308,24 @@ router.put('/api/v1/project/update', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Project update route', err);
+    logger.error("Project update route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/projects', async (req, res) => {
+router.get("/api/v1/org/projects", async (req, res) => {
   try {
     let {
       query: { industry_id = null, org_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
@@ -335,12 +335,12 @@ router.get('/api/v1/org/projects', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -349,24 +349,24 @@ router.get('/api/v1/org/projects', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get org project details route', err);
+    logger.error("Get org project details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/user/projects', async (req, res) => {
+router.get("/api/v1/user/projects", async (req, res) => {
   try {
     let {
       query: { user_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -377,12 +377,12 @@ router.get('/api/v1/user/projects', async (req, res) => {
         statusCode = STATUS_CODE_SUCCESS;
         data.details = details;
         data.invited_projects = invited_projects;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -391,51 +391,51 @@ router.get('/api/v1/user/projects', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get user created project route', err);
+    logger.error("Get user created project route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/sa/industries/top-projects', async (req, res) => {
+router.get("/api/v1/sa/industries/top-projects", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let details = await getSATopProjectService();
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data = details;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Get SA industries top project count details route', err);
+    logger.error("Get SA industries top project count details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/users/top-projects', async (req, res) => {
+router.get("/api/v1/org/users/top-projects", async (req, res) => {
   try {
     let {
       query: { org_id = 0, industry_id = 0 },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
@@ -445,15 +445,15 @@ router.get('/api/v1/org/users/top-projects', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
-      let response = setResponse(responseType, '', data, customResponse);
+      let response = setResponse(responseType, "", data, customResponse);
       res.status(statusCode).send(response);
     } else {
       responseType = CUSTOM_RESPONSE;
@@ -461,22 +461,22 @@ router.get('/api/v1/org/users/top-projects', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
   } catch (err) {
-    logger.error('Get org users top project counts details route', err);
+    logger.error("Get org users top project counts details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/user/top-projects', async (req, res) => {
+router.get("/api/v1/user/top-projects", async (req, res) => {
   try {
     let {
-      query: { user_id = 0, from = '', to = '' },
+      query: { user_id = 0, from = "", to = "" },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id }, {}, { from, to });
     if (isValid) {
@@ -485,15 +485,15 @@ router.get('/api/v1/user/top-projects', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
-      let response = setResponse(responseType, '', data, customResponse);
+      let response = setResponse(responseType, "", data, customResponse);
       res.status(statusCode).send(response);
     } else {
       responseType = CUSTOM_RESPONSE;
@@ -501,22 +501,22 @@ router.get('/api/v1/user/top-projects', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
   } catch (err) {
-    logger.error('Get users top project counts details route', err);
+    logger.error("Get users top project counts details route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/recent-projects', async (req, res) => {
+router.get("/api/v1/org/recent-projects", async (req, res) => {
   try {
     let {
       query: { limit = 10, org_id = 0 },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { limit, org_id });
     if (isValid) {
@@ -525,15 +525,15 @@ router.get('/api/v1/org/recent-projects', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = details;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
-      let response = setResponse(responseType, '', data, customResponse);
+      let response = setResponse(responseType, "", data, customResponse);
       res.status(statusCode).send(response);
     } else {
       responseType = CUSTOM_RESPONSE;
@@ -541,10 +541,10 @@ router.get('/api/v1/org/recent-projects', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
   } catch (err) {
-    logger.error('Get org recent project details route', err);
+    logger.error("Get org recent project details route", err);
     res.status(500).send(err);
   }
 });

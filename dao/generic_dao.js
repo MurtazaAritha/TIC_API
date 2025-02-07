@@ -1,27 +1,27 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const genericQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_ORGANIZATIONS':
+      case "GET_ORGANIZATIONS":
         query1 = `SELECT * FROM organizations 
                   ORDER BY created_date DESC;
                 `;
         break;
-      case 'GET_ORGANIZATION_COUNT':
+      case "GET_ORGANIZATION_COUNT":
         query1 = `SELECT count(org_id) as count FROM organizations;`;
         break;
-      case 'GET_ORG_PROJECT_COUNTS':
+      case "GET_ORG_PROJECT_COUNTS":
         query1 = `SELECT count(project_id) as count FROM projects;`;
         break;
-      case 'GET_SINGLE_ORGANIZATIONS':
+      case "GET_SINGLE_ORGANIZATIONS":
         query1 = `SELECT * FROM organizations WHERE org_id = ${params.org_id};`;
         break;
-      case 'CREATE_ORGANISATION':
+      case "CREATE_ORGANISATION":
         query1 = `INSERT INTO organizations (
                       sector_id,
                       sector_name,
@@ -47,13 +47,13 @@ const genericQuery = async (queryType, params = {}) => {
                   );
                 `;
         break;
-      case 'GET_INDUSTRIES':
+      case "GET_INDUSTRIES":
         query1 = `SELECT * FROM industries;`;
         break;
-      case 'GET_SINGLE_INDUSTRY':
+      case "GET_SINGLE_INDUSTRY":
         query1 = `SELECT * FROM industries WHERE industry_id = ${params.industry_id};`;
         break;
-      case 'CREATE_INDUSTRY':
+      case "CREATE_INDUSTRY":
         query1 = `INSERT INTO industries (
                       industry_name, 
                       industry_description, 
@@ -68,19 +68,19 @@ const genericQuery = async (queryType, params = {}) => {
                   );
                 `;
         break;
-      case 'CHECK_IF_INDUSTRY_IN_USE':
+      case "CHECK_IF_INDUSTRY_IN_USE":
         query1 = `SELECT industry_id FROM users WHERE industry_id = ${params.industry_id};`;
         break;
-      case 'DELETE_INDUSTRY':
+      case "DELETE_INDUSTRY":
         query1 = `DELETE FROM industries WHERE industry_id = ${params.industry_id};`;
         break;
-      case 'GET_SECTORS':
+      case "GET_SECTORS":
         query1 = `SELECT * FROM sectors;`;
         break;
-      case 'GET_SINGLE_SECTOR':
+      case "GET_SINGLE_SECTOR":
         query1 = `SELECT * FROM sectors WHERE sector_id = ${params.sector_id};`;
         break;
-      case 'CREATE_SECTOR':
+      case "CREATE_SECTOR":
         query1 = `INSERT INTO sectors (
                       sector_name, 
                       sector_desc
@@ -90,16 +90,16 @@ const genericQuery = async (queryType, params = {}) => {
                       '${params.sector_desc}'
                   );`;
         break;
-      case 'DELETE_SECTOR':
+      case "DELETE_SECTOR":
         query1 = `DELETE FROM sectors WHERE sector_id = ${params.sector_id};`;
         break;
-      case 'CHECK_IF_SECTOR_IN_USE':
+      case "CHECK_IF_SECTOR_IN_USE":
         query1 = `SELECT sector_id FROM users WHERE sector_id = ${params.sector_id};`;
         break;
-      case 'CHECK_IF_ORG_DETAILS_EXIST':
+      case "CHECK_IF_ORG_DETAILS_EXIST":
         query1 = `SELECT org_id FROM organizations WHERE org_name = '${params.org_name}' AND org_email = '${params.org_email}';`;
         break;
-      case 'GET_ROLE_ID_BY_NAME':
+      case "GET_ROLE_ID_BY_NAME":
         query1 = `SELECT role_id FROM roles WHERE role_name = '${params.role_name}'`;
         break;
     }
@@ -118,7 +118,7 @@ const genericQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('generic dao', err);
+    logger.error("generic dao", err);
   }
 };
 

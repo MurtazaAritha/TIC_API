@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const { logger } = require('../utils/logger');
-const { TOKEN_EXPIRED_ERR } = require('../constants/constants');
-const { loginQuery } = require('../dao/login_dao');
+const jwt = require("jsonwebtoken");
+const { logger } = require("../utils/logger");
+const { TOKEN_EXPIRED_ERR } = require("../constants/constants");
+const { loginQuery } = require("../dao/login_dao");
 
 const authenticate = async (bearerToken) => {
   try {
@@ -9,7 +9,7 @@ const authenticate = async (bearerToken) => {
     let data = {
       isValid: false,
     };
-    const token = bearerToken.split(' ')[1];
+    const token = bearerToken.split(" ")[1];
     await jwt.verify(token, jwtSecretKey, async (err, decode) => {
       if (err) {
         if (err.toString() === TOKEN_EXPIRED_ERR) {
@@ -18,7 +18,7 @@ const authenticate = async (bearerToken) => {
       } else {
         const { email = null, user_id = null, org_id = null } = decode;
         const [{ user_id: db_user_id } = {}] = await loginQuery(
-          'CHECK_IF_USER_EXISTS',
+          "CHECK_IF_USER_EXISTS",
           { email },
         );
         if (user_id === db_user_id) {
@@ -34,7 +34,7 @@ const authenticate = async (bearerToken) => {
     });
     return data;
   } catch (err) {
-    logger.error('authenticate service', err);
+    logger.error("authenticate service", err);
   }
 };
 

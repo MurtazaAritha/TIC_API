@@ -1,13 +1,13 @@
-const { connectDB } = require('../config/database');
-const { logger } = require('../utils/logger');
+const { connectDB } = require("../config/database");
+const { logger } = require("../utils/logger");
 
 var pool = connectDB();
 
 const projectQuery = async (queryType, params = {}) => {
   try {
-    let query1 = '';
+    let query1 = "";
     switch (queryType) {
-      case 'GET_PROJECTS':
+      case "GET_PROJECTS":
         // query1 = `SELECT *
         //           FROM projects
         //           ORDER BY
@@ -59,7 +59,7 @@ const projectQuery = async (queryType, params = {}) => {
                   GROUP BY o.org_id, o.sector_id;
             `;
         break;
-      case 'GET_USER_INVITED_PROJECTS':
+      case "GET_USER_INVITED_PROJECTS":
         query1 = `SELECT * 
                   FROM projects
                   WHERE JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON))
@@ -71,7 +71,7 @@ const projectQuery = async (queryType, params = {}) => {
                       last_run DESC;
                 `;
         break;
-      case 'GET_USER_CREATED_PROJECTS':
+      case "GET_USER_CREATED_PROJECTS":
         query1 = `SELECT * 
                   FROM projects
                   WHERE created_by_id = ${params.user_id} 
@@ -83,7 +83,7 @@ const projectQuery = async (queryType, params = {}) => {
                       last_run DESC;
                 `;
         break;
-      case 'GET_ORG_PROJECTS':
+      case "GET_ORG_PROJECTS":
         query1 = `SELECT 
                       u.user_id,
                       u.user_first_name,
@@ -124,7 +124,7 @@ const projectQuery = async (queryType, params = {}) => {
                               projects
                           WHERE 
                               org_id = ${params.org_id}
-                              ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''}
+                              ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ""}
                           ORDER BY 
                               CASE 
                                   WHEN status = 'Draft' THEN 1 
@@ -140,7 +140,7 @@ const projectQuery = async (queryType, params = {}) => {
                       u.user_id;
                 `;
         break;
-      case 'GET_SINGLE_PROJECT':
+      case "GET_SINGLE_PROJECT":
         query1 = `SELECT * FROM projects 
                   WHERE project_id = ${params.project_id} 
                   ORDER BY 
@@ -151,7 +151,7 @@ const projectQuery = async (queryType, params = {}) => {
                       last_run DESC;
                   `;
         break;
-      case 'CREATE_PROJECT':
+      case "CREATE_PROJECT":
         query1 = `INSERT INTO projects (
                       project_name, 
                       project_no, 
@@ -170,16 +170,16 @@ const projectQuery = async (queryType, params = {}) => {
                       status,
                       mapping_standards, 
                       summary_report
-                      ${params.last_run ? `, last_run` : ''}
-                      ${params.history ? `, history` : ''}
-                      ${params.no_of_runs ? `, no_of_runs` : ''}
-                      ${params.base64 ? `, base64` : ''}
-                      ${params.invited_user_list ? `, invited_user_list` : ''}
+                      ${params.last_run ? `, last_run` : ""}
+                      ${params.history ? `, history` : ""}
+                      ${params.no_of_runs ? `, no_of_runs` : ""}
+                      ${params.base64 ? `, base64` : ""}
+                      ${params.invited_user_list ? `, invited_user_list` : ""}
                   ) 
                   VALUES (
                       '${params.project_name}',
                       '${params.project_no}',
-                      '${params.project_description.replace(/'/g, '')}',
+                      '${params.project_description.replace(/'/g, "")}',
                       '${JSON.stringify(params.regulatory_standard)}',
                       '${JSON.stringify(params.invite_members)}',
                       '${JSON.stringify(params.documents)}',
@@ -194,15 +194,15 @@ const projectQuery = async (queryType, params = {}) => {
                       '${params.status}',
                       '${params.mapping_standards}',
                       '${JSON.stringify(params.summary_report)}'
-                      ${params.last_run ? `, '${params.last_run}'` : ''}
-                      ${params.history ? `, '${JSON.stringify(params.history)}'` : ''}
-                      ${params.no_of_runs ? `, ${params.no_of_runs}` : ''}
-                      ${params.base64 ? `, '${JSON.stringify(params.base64)}'` : ''}
-                      ${params.invited_user_list ? `, '${JSON.stringify(params.invited_user_list)}'` : ''}
+                      ${params.last_run ? `, '${params.last_run}'` : ""}
+                      ${params.history ? `, '${JSON.stringify(params.history)}'` : ""}
+                      ${params.no_of_runs ? `, ${params.no_of_runs}` : ""}
+                      ${params.base64 ? `, '${JSON.stringify(params.base64)}'` : ""}
+                      ${params.invited_user_list ? `, '${JSON.stringify(params.invited_user_list)}'` : ""}
                   );
                   `;
         break;
-      case 'UPDATE_PROJECT':
+      case "UPDATE_PROJECT":
         query1 = `UPDATE projects 
                           SET 
                               project_name = '${params.project_name}',
@@ -225,42 +225,48 @@ const projectQuery = async (queryType, params = {}) => {
                               last_run = '${params.last_run != null ? params.last_run : null}',
                               mapping_standards = '${params.mapping_standards}',
                               summary_report = '${JSON.stringify(params.summary_report)}'
-                              ${params.complianceAssesment ? `, complianceAssesment = '${params.complianceAssesment}'` : ''}
-                              ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ''}
-                              ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ''}
-                              ${params.success_count ? ` , success_count = ${params.success_count}` : ''}
-                              ${params.fail_count ? ` , fail_count = ${params.fail_count}` : ''}
-                              ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ''}
-                              ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ''}
-                              ${params.invited_user_list ? `, invited_user_list = '${JSON.stringify(params.invited_user_list)}'` : ''}
+                              ${params.history ? `, history = '${JSON.stringify(params.history)}'` : ""}
+                              ${params.no_of_runs ? ` , no_of_runs = ${params.no_of_runs}` : ""}
+                              ${params.success_count ? ` , success_count = ${params.success_count}` : ""}
+                              ${params.fail_count ? ` , fail_count = ${params.fail_count}` : ""}
+                              ${params.standardUploaded != null ? ` , standardUploaded = '${params.standardUploaded}'` : ""}
+                              ${params.base64 ? `, base64 = '${JSON.stringify(params.base64)}'` : ""}
+                              ${params.invited_user_list ? `, invited_user_list = '${JSON.stringify(params.invited_user_list)}'` : ""}
                         `;
 
         // ${params.complianceAssesment ? `, complianceAssesment = '${JSON.stringify(params.complianceAssesment)}'` : ''}
 
         // Conditionally append checkListResponse and chatResponse
+        if (params.complianceAssesment) {
+          const escapedComplianceAssesment = params.complianceAssesment.replace(
+            /['"]/g, // This will match both single and double quotes
+            "",
+          );
+          query1 += `, complianceAssesment = "${escapedComplianceAssesment}"`;
+        }
         if (params.checkListResponse) {
           const escapedCheckListResponse = params.checkListResponse.replace(
-            /'/g,
-            "''",
+            /['"]/g, // This will match both single and double quotes
+            "",
           );
-          query1 += `, checkListResponse = '${escapedCheckListResponse}'`;
+          query1 += `, checkListResponse = "${escapedCheckListResponse}"`;
         }
         if (params.chatResponse) {
-          query1 += `, chatResponse = '${JSON.stringify(params.chatResponse)}'`;
+          query1 += `, chatResponse = "${JSON.stringify(params.chatResponse)}"`;
         }
 
         query1 += ` WHERE project_id = ${params.project_id};`;
         break;
-      case 'GET_PROJECT_INVITED_MEMBERS':
+      case "GET_PROJECT_INVITED_MEMBERS":
         query1 = `SELECT invited_user_list 
                   FROM projects 
                   WHERE project_id = ${params.project_id};
                 `;
         break;
-      case 'DELETE_PROJECT':
+      case "DELETE_PROJECT":
         query1 = ``;
         break;
-      case 'GET_PROJECT_COUNTS':
+      case "GET_PROJECT_COUNTS":
         query1 = `SELECT
                       COUNT(*) AS total_projects_count,
                       SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) AS draft_count,
@@ -268,13 +274,13 @@ const projectQuery = async (queryType, params = {}) => {
                       SUM(CASE WHEN status = 'Success' THEN 1 ELSE 0 END) AS success_count,
                       SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed_count,
                       SUM(CASE WHEN JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON)) THEN 1 ELSE 0 END) AS invited_projects_count
-                  FROM projects
+                  FROM projects 
                   WHERE 
                       created_by_id = ${params.user_id} 
                       OR JSON_CONTAINS(invited_user_list, CAST(${params.user_id} AS JSON));  -- Check for invited projects
                   `;
         break;
-      case 'GET_ORG_PROJECT_COUNTS':
+      case "GET_ORG_PROJECT_COUNTS":
         query1 = `SELECT
                       COUNT(*) AS total_projects_count,
                       SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) AS draft_count,
@@ -284,9 +290,9 @@ const projectQuery = async (queryType, params = {}) => {
                   FROM projects 
                   WHERE 
                     org_id = ${params.org_id} 
-                    ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ''};`;
+                    ${params.industry_id ? ` AND industry_id = ${params.industry_id}` : ""};`;
         break;
-      case 'GET_SA_PROJECT_COUNTS':
+      case "GET_SA_PROJECT_COUNTS":
         query1 = `SELECT
                       COUNT(*) AS total_projects_count,
                       SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) AS draft_count,
@@ -295,7 +301,7 @@ const projectQuery = async (queryType, params = {}) => {
                       SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed_count
                   FROM projects`;
         break;
-      case 'GET_SA_TOP_PROJECTS':
+      case "GET_SA_TOP_PROJECTS":
         query1 = `SELECT 
                       i.industry_name,
                       COUNT(p.project_id) AS project_count
@@ -306,7 +312,7 @@ const projectQuery = async (queryType, params = {}) => {
                   LIMIT 10;
                 `;
         break;
-      case 'GET_SA_ORG_PROJECT_COUNTS':
+      case "GET_SA_ORG_PROJECT_COUNTS":
         query1 = `SELECT o.org_name, COUNT(p.project_id) AS project_count
                   FROM organizations o
                   LEFT JOIN projects p ON o.org_id = p.org_id
@@ -314,7 +320,7 @@ const projectQuery = async (queryType, params = {}) => {
                   ORDER BY project_count DESC;
                 `;
         break;
-      case 'GET_ORG_TOP_PROJECTS':
+      case "GET_ORG_TOP_PROJECTS":
         query1 = `SELECT 
                       u.user_first_name, u.user_last_name,
                       COUNT(p.project_id) AS project_count
@@ -326,7 +332,7 @@ const projectQuery = async (queryType, params = {}) => {
                   LIMIT 10;
                 `;
         break;
-      case 'GET_USER_TOP_PROJECTS':
+      case "GET_USER_TOP_PROJECTS":
         query1 = `WITH RECURSIVE DateRange AS (
                       SELECT '${params.from}' AS project_date
                       UNION ALL
@@ -365,7 +371,7 @@ const projectQuery = async (queryType, params = {}) => {
         //   query1 += ` AND EXTRACT(WEEK FROM created_at) = ${params.week}`;
         // }
         break;
-      case 'GET_ORG_RECENT_PROJECTS':
+      case "GET_ORG_RECENT_PROJECTS":
         query1 = `SELECT 
                       project_name, 
                       project_id, 
@@ -406,7 +412,7 @@ const projectQuery = async (queryType, params = {}) => {
       });
     });
   } catch (err) {
-    logger.error('project dao', err);
+    logger.error("project dao", err);
   }
 };
 

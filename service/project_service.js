@@ -1,28 +1,32 @@
-const { logger } = require('../utils/logger');
-const { projectQuery } = require('../dao/project_dao');
-const { userQuery } = require('../dao/user_dao');
-const { genericQuery } = require('../dao/generic_dao');
-const { smtpTransporter } = require('../config/aws_config');
+const { logger } = require("../utils/logger");
+const { projectQuery } = require("../dao/project_dao");
+const { userQuery } = require("../dao/user_dao");
+const { genericQuery } = require("../dao/generic_dao");
+const { smtpTransporter } = require("../config/aws_config");
 
 const projectService = async (params) => {
   try {
     let data = {};
-    const response = await projectQuery('CREATE_PROJECT', params);
+    const response = await projectQuery("CREATE_PROJECT", params);
     let project_id = response?.insertId ? response.insertId : 0;
     if (project_id) {
-      data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
+      data = await projectQuery("GET_SINGLE_PROJECT", { project_id });
       params.invite_members.forEach((user) => {
         sendMail({
           user_name: user.user_name,
           user_email: user.user_email,
           project_name: params.project_name,
         });
-        console.log('Mail sent while creating project for ', user.user_email);
+        console.log("Mail sent while creating project for ", user.user_email);
+      });
+      await projectQuery("CREATE_PROJECT_CREATION_NOTIFICATION", {
+        project_id,
+        user_id: params.created_by_id,
       });
     }
     return data;
   } catch (error) {
-    logger.error('Project service', error);
+    logger.error("Project service", error);
   }
 };
 
@@ -33,7 +37,7 @@ const sendMail = async (params) => {
       from: process.env.FROM,
       to: params.user_email.toLowerCase(),
       text: params.user_password,
-      subject: 'Welcome to Regunova AI – You have been invited to a project!',
+      subject: "Welcome to Regunova AI – You have been invited to a project!",
       html: `<style>
                     p {
                       color: black;
@@ -61,41 +65,41 @@ const sendMail = async (params) => {
     };
     await smtpTransporter.sendMail(mailOptions);
   } catch (error) {
-    logger.error('Send mail service', error);
+    logger.error("Send mail service", error);
   }
 };
 
 const getProjectService = async () => {
   try {
-    const data = await projectQuery('GET_PROJECTS');
+    const data = await projectQuery("GET_PROJECTS");
     return data;
   } catch (error) {
-    logger.error('Project service', error);
+    logger.error("Project service", error);
   }
 };
 
 const getSingleProjectService = async (params) => {
   try {
-    const data = await projectQuery('GET_SINGLE_PROJECT', params);
+    const data = await projectQuery("GET_SINGLE_PROJECT", params);
     return data;
   } catch (error) {
-    logger.error('Get Single project service', error);
+    logger.error("Get Single project service", error);
   }
 };
 
 const projectUpdateService = async (params) => {
   try {
     let data = {};
-    await projectQuery('UPDATE_PROJECT', params);
+    await projectQuery("UPDATE_PROJECT", params);
     let project_id = params.project_id;
     if (project_id) {
-      data = await projectQuery('GET_SINGLE_PROJECT', { project_id });
+      data = await projectQuery("GET_SINGLE_PROJECT", { project_id });
       let [{ invited_user_list = [] } = {}] = await projectQuery(
-        'GET_PROJECT_INVITED_MEMBERS',
+        "GET_PROJECT_INVITED_MEMBERS",
         { project_id: params.project_id },
       );
-      let newInvitedUserList = params.invite_members.filter(
-        (user) => !invited_user_list.includes(user.user_id),
+      let newInvitedUserList = params?.invite_members.filter(
+        (user) => !invited_user_list?.includes(user?.user_id),
       );
       if (newInvitedUserList.length > 0) {
         newInvitedUserList.forEach((user) => {
@@ -104,117 +108,117 @@ const projectUpdateService = async (params) => {
             user_email: user.user_email,
             project_name: params.project_name,
           });
-          console.log('Mail sent while updating project for ', user.user_email);
+          console.log("Mail sent while updating project for ", user.user_email);
         });
       }
     }
     return data;
   } catch (error) {
-    logger.error('Project update service', error);
+    logger.error("Project update service", error);
   }
 };
 
 const getProjectCountService = async (params) => {
   try {
-    const data = await projectQuery('GET_PROJECT_COUNTS', params);
+    const data = await projectQuery("GET_PROJECT_COUNTS", params);
     return data;
   } catch (error) {
-    logger.error('Get project count service', error);
+    logger.error("Get project count service", error);
   }
 };
 
 const getOrgProjectService = async (params) => {
   try {
-    const data = await projectQuery('GET_ORG_PROJECTS', params);
+    const data = await projectQuery("GET_ORG_PROJECTS", params);
     return data;
   } catch (error) {
-    logger.error('Get org project service', error);
+    logger.error("Get org project service", error);
   }
 };
 
 const getUserCreatedProjectService = async (params) => {
   try {
-    const data = await projectQuery('GET_USER_CREATED_PROJECTS', params);
+    const data = await projectQuery("GET_USER_CREATED_PROJECTS", params);
     return data;
   } catch (error) {
-    logger.error('Get user created project service', error);
+    logger.error("Get user created project service", error);
   }
 };
 
 const getUserInvitedProjectService = async (params) => {
   try {
-    const data = await projectQuery('GET_USER_INVITED_PROJECTS', params);
+    const data = await projectQuery("GET_USER_INVITED_PROJECTS", params);
     return data;
   } catch (error) {
-    logger.error('Get user invited project service', error);
+    logger.error("Get user invited project service", error);
   }
 };
 
 const getOrgCountService = async (params) => {
   try {
     const data = {};
-    let details = await projectQuery('GET_ORG_PROJECT_COUNTS', params);
+    let details = await projectQuery("GET_ORG_PROJECT_COUNTS", params);
     data.details = details[0] ? details[0] : {};
-    data.activeUserCount = await userQuery('GET_ORG_ACTIVE_USER_COUNT', params);
+    data.activeUserCount = await userQuery("GET_ORG_ACTIVE_USER_COUNT", params);
     data.inactiveUserCount = await userQuery(
-      'GET_ORG_INACTIVE_USER_COUNT',
+      "GET_ORG_INACTIVE_USER_COUNT",
       params,
     );
     return data;
   } catch (error) {
-    logger.error('Get org project count service', error);
+    logger.error("Get org project count service", error);
   }
 };
 
 const getSACountService = async () => {
   try {
     let data = {};
-    let details = await projectQuery('GET_SA_PROJECT_COUNTS');
+    let details = await projectQuery("GET_SA_PROJECT_COUNTS");
     data.details = details[0] ? details[0] : {};
-    data.activeUserCount = await userQuery('GET_SA_ACTIVE_USER_COUNT');
-    data.inactiveUserCount = await userQuery('GET_SA_INACTIVE_USER_COUNT');
-    data.orgCount = await genericQuery('GET_ORGANIZATION_COUNT');
+    data.activeUserCount = await userQuery("GET_SA_ACTIVE_USER_COUNT");
+    data.inactiveUserCount = await userQuery("GET_SA_INACTIVE_USER_COUNT");
+    data.orgCount = await genericQuery("GET_ORGANIZATION_COUNT");
     return data;
   } catch (error) {
-    logger.error('Get SA project count service', error);
+    logger.error("Get SA project count service", error);
   }
 };
 
 const getSATopProjectService = async () => {
   try {
     let data = {};
-    data.industryCount = await projectQuery('GET_SA_TOP_PROJECTS');
-    data.orgCount = await projectQuery('GET_SA_ORG_PROJECT_COUNTS');
+    data.industryCount = await projectQuery("GET_SA_TOP_PROJECTS");
+    data.orgCount = await projectQuery("GET_SA_ORG_PROJECT_COUNTS");
     return data;
   } catch (error) {
-    logger.error('Get SA top project service', error);
+    logger.error("Get SA top project service", error);
   }
 };
 
 const getOrgTopProjectService = async (params) => {
   try {
-    let details = await projectQuery('GET_ORG_TOP_PROJECTS', params);
+    let details = await projectQuery("GET_ORG_TOP_PROJECTS", params);
     return details;
   } catch (error) {
-    logger.error('Get org top project service', error);
+    logger.error("Get org top project service", error);
   }
 };
 
 const getUserTopProjectService = async (params) => {
   try {
-    let details = await projectQuery('GET_USER_TOP_PROJECTS', params);
+    let details = await projectQuery("GET_USER_TOP_PROJECTS", params);
     return details;
   } catch (error) {
-    logger.error('Get user top project service', error);
+    logger.error("Get user top project service", error);
   }
 };
 
 const getOrgRecentProjectService = async (params) => {
   try {
-    let details = await projectQuery('GET_ORG_RECENT_PROJECTS', params);
+    let details = await projectQuery("GET_ORG_RECENT_PROJECTS", params);
     return details;
   } catch (error) {
-    logger.error('Get org recent project service', error);
+    logger.error("Get org recent project service", error);
   }
 };
 

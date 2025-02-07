@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = new express.Router();
-const { setResponse } = require('../utils/response');
-const { validate } = require('../utils/helper');
+const { setResponse } = require("../utils/response");
+const { validate } = require("../utils/helper");
 
 const {
   SUCCESS,
@@ -11,8 +11,8 @@ const {
   STATUS_CODE_INVALID_SUCCESS,
   STATUS_CODE_INTERNAL_SERVER_ERROR,
   CUSTOM_RESPONSE,
-} = require('../constants/response_constants');
-const { logger } = require('../utils/logger');
+} = require("../constants/response_constants");
+const { logger } = require("../utils/logger");
 const {
   insertUserService,
   getUserService,
@@ -23,9 +23,9 @@ const {
   getOrgUserCountService,
   getSaUserCountService,
   deleteUserService,
-} = require('../service/user_service');
+} = require("../service/user_service");
 
-router.post('/api/v1/user/create', async (req, res) => {
+router.post("/api/v1/user/create", async (req, res) => {
   try {
     const {
       org_id,
@@ -38,8 +38,8 @@ router.post('/api/v1/user/create', async (req, res) => {
       created_by,
     } = req.body;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate(
       { user_first_name, user_last_name, user_phone_no, role_name },
@@ -52,12 +52,12 @@ router.post('/api/v1/user/create', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Created User Successfully';
+        data.message = "Created User Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to create user';
+        customResponse.message = "Failed to create user";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -66,24 +66,24 @@ router.post('/api/v1/user/create', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('Project create route', err);
+    logger.error("Project create route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/users/exist', async (req, res) => {
+router.get("/api/v1/users/exist", async (req, res) => {
   try {
     let {
       query: { email = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, { email });
     if (isValid) {
@@ -91,11 +91,11 @@ router.get('/api/v1/users/exist', async (req, res) => {
       if (res) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'User exist';
+        data.message = "User exist";
       } else {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'User not exist';
+        data.message = "User not exist";
       }
     } else {
       responseType = CUSTOM_RESPONSE;
@@ -103,51 +103,51 @@ router.get('/api/v1/users/exist', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get user exist route', err);
+    logger.error("get user exist route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/users', async (req, res) => {
+router.get("/api/v1/users", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let details = await getUserService();
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data = details;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get user route', err);
+    logger.error("get user route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/users/:user_id', async (req, res) => {
+router.get("/api/v1/users/:user_id", async (req, res) => {
   try {
     let {
       params: { user_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -156,12 +156,12 @@ router.get('/api/v1/users/:user_id', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -170,24 +170,24 @@ router.get('/api/v1/users/:user_id', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get single user route', err);
+    logger.error("get single user route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/users', async (req, res) => {
+router.get("/api/v1/org/users", async (req, res) => {
   try {
     let {
       query: { industry_id = null, org_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
@@ -197,12 +197,12 @@ router.get('/api/v1/org/users', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = res;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -211,17 +211,17 @@ router.get('/api/v1/org/users', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get org users route', err);
+    logger.error("get org users route", err);
     res.status(500).send(err);
   }
 });
 
-router.put('/api/v1/user/update', async (req, res) => {
+router.put("/api/v1/user/update", async (req, res) => {
   try {
     let {
       org_id,
@@ -235,8 +235,8 @@ router.put('/api/v1/user/update', async (req, res) => {
     const { user_id } = req.query;
     req.body.user_id = user_id;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate(
       { user_first_name, user_last_name, user_phone_no, role_name },
@@ -249,12 +249,12 @@ router.put('/api/v1/user/update', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data.details = res;
-        data.message = 'Updated User Successfully';
+        data.message = "Updated User Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to update user';
+        customResponse.message = "Failed to update user";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -263,24 +263,24 @@ router.put('/api/v1/user/update', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('User update  route', err);
+    logger.error("User update  route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/org/userCount', async (req, res) => {
+router.get("/api/v1/org/userCount", async (req, res) => {
   try {
     let {
       query: { industry_id = null, org_id = null },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     industry_id = parseInt(industry_id);
     const { isValid, errors } = validate({}, {}, { org_id });
@@ -290,12 +290,12 @@ router.get('/api/v1/org/userCount', async (req, res) => {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
         data = response;
-        data.message = 'Fetched Details Successfully';
+        data.message = "Fetched Details Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to get response';
+        customResponse.message = "Failed to get response";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -304,52 +304,52 @@ router.get('/api/v1/org/userCount', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get org user count route', err);
+    logger.error("get org user count route", err);
     res.status(500).send(err);
   }
 });
 
-router.get('/api/v1/sa/userCount', async (req, res) => {
+router.get("/api/v1/sa/userCount", async (req, res) => {
   try {
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     let details = await getSaUserCountService();
     if (details) {
       responseType = SUCCESS;
       statusCode = STATUS_CODE_SUCCESS;
       data = details;
-      data.message = 'Fetched Details Successfully';
+      data.message = "Fetched Details Successfully";
     } else {
       responseType = CUSTOM_RESPONSE;
       statusCode = STATUS_CODE_BAD_REQUEST;
       customResponse.statusCode = statusCode;
-      customResponse.message = 'Failed to get response';
+      customResponse.message = "Failed to get response";
       customResponse.messageCode = statusCode;
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('get sa user count route', err);
+    logger.error("get sa user count route", err);
     res.status(500).send(err);
   }
 });
 
-router.post('/api/v1/users/:user_id/updateActive', async (req, res) => {
+router.post("/api/v1/users/:user_id/updateActive", async (req, res) => {
   try {
     let {
       params: { user_id = 0 },
       query: { is_active },
     } = req;
     let data = {};
-    let responseType = '';
-    let statusCode = '';
+    let responseType = "";
+    let statusCode = "";
     let customResponse = {};
     const { isValid, errors } = validate({}, {}, { user_id });
     if (isValid) {
@@ -357,12 +357,12 @@ router.post('/api/v1/users/:user_id/updateActive', async (req, res) => {
       if (res) {
         responseType = SUCCESS;
         statusCode = STATUS_CODE_SUCCESS;
-        data.message = 'Updated User Successfully';
+        data.message = "Updated User Successfully";
       } else {
         responseType = CUSTOM_RESPONSE;
         statusCode = STATUS_CODE_BAD_REQUEST;
         customResponse.statusCode = statusCode;
-        customResponse.message = 'Failed to delete user';
+        customResponse.message = "Failed to delete user";
         customResponse.messageCode = statusCode;
       }
     } else {
@@ -371,12 +371,12 @@ router.post('/api/v1/users/:user_id/updateActive', async (req, res) => {
       customResponse.message = Object.values(errors)
         .flatMap((err) => Object.values(err))
         .filter((msg) => msg)
-        .join(', ');
+        .join(", ");
     }
-    let response = setResponse(responseType, '', data, customResponse);
+    let response = setResponse(responseType, "", data, customResponse);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error('User update active route', err);
+    logger.error("User update active route", err);
     res.status(500).send(err);
   }
 });
