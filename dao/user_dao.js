@@ -202,7 +202,6 @@ const userQuery = async (queryType, params = {}) => {
                       user_profile = '${params.user_profile}',
                       user_email = '${params.user_email}',
                       user_phone_no = '${params.user_phone_no}',
-                      user_password = '${params.user_password}',
                       user_address = '${JSON.stringify(params.user_address)}',
                       created_by = ${params.created_by},
                       sector_id = ${params.sector_id},
