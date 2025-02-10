@@ -246,41 +246,41 @@ const getFileDetailsFromS3 = async (imageKeys) => {
       Bucket: process.env.BUCKET_NAME,
     });
 
-    for (let imageKey of imageKeys) {
+    // for (let imageKey of imageKeys) {
       // Fetch the image from S3
-      const s3Object = await getFromS3(getParams(imageKey));
+      const s3Object = await getFromS3(getParams(imageKeys));
 
       // Decode the base64 data to binary data
       const binaryData = Buffer.from(s3Object, "base64");
 
       // Extract the file extension from the image key
-      const fileExtension = imageKey.split(".").pop();
+      const fileExtension = imageKeys.split(".").pop();
 
       // Define the file path to save the file with appropriate extension
       const filePath = path.join(
         __dirname,
-        `../utils/output-file-${imageKey}.${fileExtension}`,
+        `../utils/output-file-${imageKeys}.${fileExtension}`,
       );
 
       // Write the binary data to the file system
       await fs.promises.writeFile(filePath, binaryData);
-      console.log(`File written successfully for ${imageKey}`);
+      console.log(`File written successfully for ${imageKeys}`);
 
       // Create a file stream from the saved file
       const fileStream = fs.createReadStream(filePath);
 
       if (!fileStream) {
-        console.log(`fileStream is not found for ${imageKey}`);
-        continue;
+        console.log(`fileStream is not found for ${imageKeys}`);
+        return { success: false, error: `fileStream is not found for ${imageKeys}` };
       }
 
       // Append the file to the form data
       form.append("file", fileStream, {
-        filename: `your-file-${imageKey}`, // File name sent to the server
+        filename: `your-file-${imageKeys}`, // File name sent to the server
         ContentType: `application/${fileExtension}`, // Content type based on file extension
         Accept: "application/json",
       });
-    }
+    // }
 
     // Return the form containing all the files
     return form;
