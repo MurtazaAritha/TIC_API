@@ -252,7 +252,7 @@ const projectQuery = async (queryType, params = {}) => {
           query1 += `, checkListResponse = "${escapedCheckListResponse}"`;
         }
         if (params.chatResponse) {
-          query1 += `, chatResponse = "${JSON.stringify(params.chatResponse)}"`;
+          query1 += `, chatResponse = '${JSON.stringify(params.chatResponse)}'`;
         }
 
         query1 += ` WHERE project_id = ${params.project_id};`;
