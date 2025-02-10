@@ -299,7 +299,7 @@ const getParams = (imageKey) => ({
 const getFileDetailsFromS3Service = async (imageKeys) => {
   try {
     const form = new FormData();
-
+    imageKeys = JSON.parse(imageKeys);
     for (let imageKey of imageKeys) {
       // Fetch the image from S3
       const s3Object = await getFromS3(getParams(imageKey));
@@ -329,7 +329,7 @@ const getFileDetailsFromS3Service = async (imageKeys) => {
       }
 
       // Append the file to the form data
-      form.append("file", fileStream, {
+      form.append("files", fileStream, {
         filename: `your-file-${imageKey}`, // File name sent to the server
         ContentType: `application/${fileExtension}`, // Content type based on file extension
         Accept: "application/json",
