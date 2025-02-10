@@ -1,15 +1,15 @@
-// const crypto = require("crypto");
-// const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
-// const { smtpTransporter } = require("../config/aws_config");
+const { smtpTransporter } = require("../config/aws_config");
 const { loginQuery, forgotPasswordQuery } = require("../dao/login_dao");
 const { logger } = require("../utils/logger");
 const { getOtp, getToken, getRefreshToken } = require("../utils/helper");
 const {
   TOKEN_EXPIRED_ERR,
-  // INVALID_EMAIL,
-  // INVALID_PASSWORD,
+  INVALID_EMAIL,
+  INVALID_PASSWORD,
 } = require("../constants/response_constants");
 
 const loginService = async (email, password) => {
@@ -21,6 +21,7 @@ const loginService = async (email, password) => {
     let [
       {
         user_id: personId = null,
+        user_password = null,
         user_password_expiry = null,
       } = {},
     ] = await loginQuery("CHECK_IF_USER_EXISTS", loginParams);
@@ -32,7 +33,11 @@ const loginService = async (email, password) => {
       currentTimestamp < user_password_expiry
     ) {
       if (!personId) {
-        loginResObj.message = "User not found";
+        loginResObj.message = INVALID_EMAIL;
+        return loginResObj;
+      }
+      if (password != user_password) {
+        loginResObj.message = INVALID_PASSWORD;
         return loginResObj;
       }
       const userDetails =
