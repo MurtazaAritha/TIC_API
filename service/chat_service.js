@@ -299,7 +299,7 @@ const getParams = (imageKey) => ({
 const getFileDetailsFromS3Service = async (imageKeys) => {
   try {
     const form = new FormData();
-    imageKeys = JSON.parse(imageKeys);
+    // imageKeys = JSON.parse(imageKeys);
     for (let imageKey of imageKeys) {
       // Fetch the image from S3
       const s3Object = await getFromS3(getParams(imageKey));
