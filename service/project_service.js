@@ -106,14 +106,14 @@ const getSingleProjectService = async (params) => {
 const projectUpdateService = async (params) => {
   try {
     let data = {};
+    let [{ invited_user_list = [] } = {}] = await projectQuery(
+      "GET_PROJECT_INVITED_MEMBERS",
+      { project_id: params.project_id },
+    );
     await projectQuery("UPDATE_PROJECT", params);
     let project_id = params.project_id;
     if (project_id) {
       data = await projectQuery("GET_SINGLE_PROJECT", { project_id });
-      let [{ invited_user_list = [] } = {}] = await projectQuery(
-        "GET_PROJECT_INVITED_MEMBERS",
-        { project_id: params.project_id },
-      );
       let newInvitedUserList = params?.invite_members.filter(
         (user) => !invited_user_list?.includes(user?.user_id),
       );
