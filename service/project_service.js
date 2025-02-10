@@ -3,6 +3,7 @@ const { projectQuery } = require("../dao/project_dao");
 const { userQuery } = require("../dao/user_dao");
 const { genericQuery } = require("../dao/generic_dao");
 const { smtpTransporter } = require("../config/aws_config");
+const { notificationQuery } = require("../dao/notification_dao");
 
 const projectService = async (params) => {
   try {
@@ -19,10 +20,25 @@ const projectService = async (params) => {
         });
         console.log("Mail sent while creating project for ", user.user_email);
       });
-      await projectQuery("CREATE_PROJECT_CREATION_NOTIFICATION", {
+      const type = "PROJECT_CREATION";
+      await notificationQuery("CREATE_PROJECT_CREATION_NOTIFICATION", {
+        notification_message: `${params.project_name} created successfully`,
         project_id,
         user_id: params.created_by_id,
+        type,
       });
+      let organizationAdmins = await userQuery("GET_ORGANIZATION_ADMIN", {
+        organization_id: params.org_id,
+      });
+      const orgAdminArray = organizationAdmins[0]?.org_admin;
+      for (const admin of orgAdminArray) {
+        await notificationQuery("CREATE_PROJECT_CREATION_NOTIFICATION", {
+          notification_message: `${params.project_name} has been added to your organization by ${params.created_by_name} `,
+          project_id,
+          user_id: admin,
+          type,
+        });
+      }
     }
     return data;
   } catch (error) {

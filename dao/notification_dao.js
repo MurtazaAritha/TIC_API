@@ -18,6 +18,11 @@ const notificationQuery = async (queryType, params = {}) => {
                     VALUES (${params.user_id}, '${params.type}', '${params.notification_message}');
                   `;
         break;
+      case "CREATE_PROJECT_CREATION_NOTIFICATION":
+        query1 = `INSERT INTO notifications (user_id, project_id, type, notification_message) 
+                    VALUES (${params.user_id}, ${params.project_id}, '${params.type}', '${params.notification_message}');
+                  `;
+        break;
     }
 
     return new Promise((resolve, reject) => {
