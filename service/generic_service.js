@@ -185,6 +185,15 @@ const deleteSectorService = async (params) => {
   }
 };
 
+const toggleActiveUserService = async (params) => {
+  try {
+    await genericQuery("TOGGLE_ACTIVE_USER", params);
+    return true;
+  } catch (error) {
+    logger.error("toggle active user service", error);
+  }
+};
+
 module.exports = {
   getOrgService,
   getSignleOrgService,
@@ -199,4 +208,5 @@ module.exports = {
   getOrgCountService,
   deleteSectorService,
   deleteIndustryService,
+  toggleActiveUserService,
 };

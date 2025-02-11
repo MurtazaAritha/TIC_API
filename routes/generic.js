@@ -26,6 +26,7 @@ const {
   getOrgCountService,
   deleteSectorService,
   deleteIndustryService,
+  toggleActiveUserService,
 } = require("../service/generic_service");
 
 router.get("/api/v1/organizations/exist", async (req, res) => {
@@ -536,5 +537,46 @@ router.delete("/api/v1/sectors/:sector_id/delete", async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+router.post("/api/v1/organizations/:org_id/users/toggle-active", async (req, res) => {
+    try {
+      let {
+        params: { org_id = 0 },
+        query: { user_id, is_active },
+      } = req;
+      let data = {};
+      let responseType = "";
+      let statusCode = "";
+      let customResponse = {};
+      const { isValid, errors } = validate({}, {}, { org_id });
+      if (isValid) {
+        let res = await toggleActiveUserService({ org_id, user_id, is_active });
+        if (res) {
+          responseType = SUCCESS;
+          statusCode = STATUS_CODE_SUCCESS;
+          data.message = "Updated Successfully";
+        } else {
+          responseType = CUSTOM_RESPONSE;
+          statusCode = STATUS_CODE_BAD_REQUEST;
+          customResponse.statusCode = statusCode;
+          customResponse.message = "Failed to delete user";
+          customResponse.messageCode = statusCode;
+        }
+      } else {
+        responseType = CUSTOM_RESPONSE;
+        statusCode = STATUS_CODE_BAD_REQUEST;
+        customResponse.message = Object.values(errors)
+          .flatMap((err) => Object.values(err))
+          .filter((msg) => msg)
+          .join(", ");
+      }
+      let response = setResponse(responseType, "", data, customResponse);
+      res.status(statusCode).send(response);
+    } catch (err) {
+      logger.error("User toggle active route", err);
+      res.status(500).send(err);
+    }
+  },
+);
 
 module.exports = router;
