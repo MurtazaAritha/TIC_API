@@ -24,7 +24,7 @@ const loginService = async (email, password) => {
         user_password = null,
         user_password_expiry = null,
       } = {},
-    ] = await loginQuery("CHECK_IF_USER_EXISTS", loginParams);
+    ] = await loginQuery("CHECK_USER_EXISTS", loginParams);
     const currentTimestamp = new Date();
 
     // Compare expiry date with current date
@@ -89,7 +89,7 @@ const forgotPasswordService = async (params) => {
       isEmailSent: false,
     };
     const [{ user_id: userId = 0 }] = await loginQuery(
-      "CHECK_IF_USER_EXISTS",
+      "CHECK_USER_EXISTS",
       params,
     );
     if (userId) {
@@ -187,10 +187,7 @@ const refreshTokenService = async (refreshToken) => {
                 user_id = null,
                 refreshToken: referenceRefreshToken = null,
               } = {},
-            ] = await loginQuery(
-              "CHECK_IF_USER_EXISTS",
-              checkRefreshTokenParams,
-            );
+            ] = await loginQuery("CHECK_USER_EXISTS", checkRefreshTokenParams);
             // const comparisionToken = crypto
             //   .createHash('md5')
             //   .update(refreshToken)
@@ -234,7 +231,7 @@ const refreshTokenService = async (refreshToken) => {
 const resetPasswordService = async (params) => {
   try {
     const [{ user_id: userId = 0 } = {}] = await loginQuery(
-      "CHECK_IF_USER_EXISTS",
+      "CHECK_USER_EXISTS",
       params,
     );
     if (userId > 0) {

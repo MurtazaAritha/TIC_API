@@ -59,7 +59,10 @@ const loginQuery = async (queryType, params = {}) => {
                 WHERE user_id = ${params.user_id};`;
         break;
       case "CHECK_IF_USER_EXISTS":
-        query1 = `SELECT user_id, refreshToken, user_password, user_password_expiry FROM users WHERE user_email = '${params.email}' and is_active = 1;`;
+        query1 = `SELECT user_id, refreshToken, user_password, user_password_expiry FROM users WHERE user_email = '${params.email}';`;
+        break;
+      case "CHECK_USER_EXISTS":
+        query1 = `SELECT user_id, refreshToken, user_password, user_password_expiry FROM users WHERE user_email = '${params.email} and is_active = 1';`;
         break;
       case "USER_LOGOUT":
         query1 = `UPDATE users SET token = NULL, refreshToken = NULL WHERE user_id = '${params.user_id}';`;
