@@ -27,12 +27,15 @@ const insertUserService = async (params) => {
         organization_id: params.org_id,
       });
       const orgAdminArray = organizationAdmins[0]?.org_admin;
+      if(orgAdminArray)
+      {
       for (const admin of orgAdminArray) {
         await notificationQuery("CREATE_USER_CREATION_NOTIFICATION", {
           notification_message: "New user has been added to your organization",
           user_id: admin,
           type,
         });
+      }
       }
       const roleKeywords = ["admin", "super admin", "org super admin"];
       let isAdmin = roleKeywords.some((keyword) =>
