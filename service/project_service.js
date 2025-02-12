@@ -31,6 +31,8 @@ const projectService = async (params) => {
         organization_id: params.org_id,
       });
       const orgAdminArray = organizationAdmins[0]?.org_admin;
+      if(orgAdminArray)
+      {
       for (const admin of orgAdminArray) {
         await notificationQuery("CREATE_PROJECT_CREATION_NOTIFICATION", {
           notification_message: `${params.project_name} has been added to your organization by ${params.created_by_name} `,
@@ -38,6 +40,7 @@ const projectService = async (params) => {
           user_id: admin,
           type,
         });
+      }
       }
     }
     return data;
